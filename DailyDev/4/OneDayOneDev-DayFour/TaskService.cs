@@ -94,7 +94,7 @@ namespace OneDayOneDev_DayTwo
 
         public int GetNewId()
         {
-            return Tasks.Count == 0 ? 1 : Tasks.Max(t => t.id);
+            return Tasks.Count == 0 ? 1 : Tasks.Max(t => t.id) + 1;
         }
         private int RetrieveCustomerInputForId()
         {
