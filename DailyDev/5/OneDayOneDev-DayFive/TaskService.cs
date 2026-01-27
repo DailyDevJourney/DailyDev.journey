@@ -11,6 +11,12 @@ namespace OneDayOneDev_DayFive
         List<TaskItem> Tasks { get; set; }
         string ListFilePath = $"{AppContext.BaseDirectory}ListeTache.txt";
         ConsoleUi UI = new ConsoleUi();
+
+        public TaskService(List<TaskItem> InitialList)
+        {
+            Tasks = InitialList;
+        }
+
         public TaskService()
         { 
             Tasks = new List<TaskItem>();
