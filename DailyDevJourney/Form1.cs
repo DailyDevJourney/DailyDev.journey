@@ -38,11 +38,7 @@ namespace DailyDevJourney
             if(!string.IsNullOrEmpty(FolderPath.Text))
             {
                 string[] Folders = Directory.GetDirectories(FolderPath.Text);
-                int lastfoldernum = 0;
-                if (Folders.Length > 0)
-                {
-                    lastfoldernum = int.Parse(new DirectoryInfo(Folders[Folders.Length - 1]).Name);
-                }
+                int lastfoldernum = Folders.Length;
 
                 lastfoldernum++;
 
