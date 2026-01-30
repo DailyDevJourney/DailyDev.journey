@@ -92,11 +92,11 @@ internal class Program
                     }
 
                     break;
-                case (int)MenuInfo.nbOfCompletedTask:
+                case (int)MenuInfo.nbOfImcompletedTask:
                     //nb taches fini
                     consoleUi.ShowMessage($"Il y à {taskService.GetNumberOfEndedTask()} tache(s) terminée(s)");
                     break;
-                case (int)MenuInfo.nbOfImcompletedTask:
+                case (int)MenuInfo.nbOfcompletedTask:
                     //nb taches non fini
                     consoleUi.ShowMessage($"Il y à {taskService.GetNumberOfNonEndedTask()} tache(s) non terminée(s)");
                     break;

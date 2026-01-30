@@ -21,8 +21,8 @@ namespace OneDayOneDev_DayFive
         showCompletedTask ,
         ShowNotCompletedTask ,
         
-        nbOfCompletedTask ,
         nbOfImcompletedTask ,
+        nbOfcompletedTask ,
         
         ExportAllTaskToCSV ,
         ExportLateTaskToCSV ,
@@ -51,8 +51,8 @@ namespace OneDayOneDev_DayFive
                 case MenuInfo.showCompletedTask: return $"{menuInfo.GetNumber()} - Montrer les tâches terminées ";
                 case MenuInfo.ShowNotCompletedTask: return $"{menuInfo.GetNumber()} - Montrer les tâches non terminées ";
                 case MenuInfo.SearchTaskByWord: return $"{menuInfo.GetNumber()} - Montrer les tâches qui contiennent un mot";
-                case MenuInfo.nbOfCompletedTask: return $"{menuInfo.GetNumber()} - Combien de taches non terminées";
-                case MenuInfo.nbOfImcompletedTask: return $"{menuInfo.GetNumber()} - Combien de taches terminées";
+                case MenuInfo.nbOfImcompletedTask: return $"{menuInfo.GetNumber()} - Combien de taches non terminées";
+                case MenuInfo.nbOfcompletedTask: return $"{menuInfo.GetNumber()} - Combien de taches terminées";
                 case MenuInfo.ShowSortedTaskList: return $"{menuInfo.GetNumber()} - Montrer les tâches triées par fini puis titre";
                 case MenuInfo.ShowDueDateAndNotOver: return $"{menuInfo.GetNumber()} - Montrer les tâches à échéances aujourdh'ui non finis";
                 case MenuInfo.ShowDueDateAndOver: return $"{menuInfo.GetNumber()} - Montrer les tâches à échéances aujourdh'ui finis";
