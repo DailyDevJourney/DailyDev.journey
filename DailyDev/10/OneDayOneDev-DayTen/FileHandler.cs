@@ -1,22 +1,14 @@
-﻿using OneDayOneDev_DayFive;
-using OneDayOneDev_DaySeven;
-using OneDayOneDev_DayTen;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace OneDayOneDev_DayEight
+namespace OneDayOneDev_DayEleven
 {
-    public class FileHandler
+    public class FileHandler(IDateTimeProvider dateTimeProvider)
     {
+        public readonly IDateTimeProvider _dateTime = dateTimeProvider;
         readonly string TaskDataPath = $"{AppContext.BaseDirectory}ListeTache.txt";
         readonly string TasksExportPath = $"{AppContext.BaseDirectory}TaskExport";
 
-        public FileHandler()
-        {
-        }
+        
         public List<TaskItem>? LoadTaskData()
         {
             if (!File.Exists(TaskDataPath))
@@ -71,7 +63,7 @@ namespace OneDayOneDev_DayEight
                         default:
                             if (valeur.Length >= 3)
                             {
-                                Tasks.Add(new TaskItem(id: int.Parse(valeur[0]), Title: valeur[1], CreatedAt: DateTime.Today, dueDate: null, IsCompleted: valeur[2] == "0" ? false : true));
+                                Tasks.Add(new TaskItem(id: int.Parse(valeur[0]), Title: valeur[1], CreatedAt: _dateTime.Today, dueDate: null, IsCompleted: valeur[2] == "0" ? false : true));
                             }
 
                             break;
@@ -89,7 +81,7 @@ namespace OneDayOneDev_DayEight
         public void SaveTaskData(List<TaskItem>? Tasks)
         {
             
-            if (Tasks?.Count > 0)
+            if (Tasks.Count > 0)
             {
                 File.WriteAllLines(TaskDataPath,
                     contents: Tasks.Select(t => $"{t.id}|{t.Title}|{(t.CreatedAt == null ? "" : t.CreatedAt?.ToString("dd/MM/yyyy"))}|{(t.DueDate == null ? "" : t.DueDate?.ToString("dd/MM/yyyy"))}|{(t.Iscompleted == false ? '0' : '1')}|{(t.OverDate == null ? "" : t.OverDate?.ToString("dd/MM/yyyy"))}|{Enum.GetName(typeof(TaskPriority), t.Priority)}"));
@@ -139,7 +131,7 @@ namespace OneDayOneDev_DayEight
             var Total = Tasks == null ? 0 : Tasks.Count();
             var NonEnded = Tasks == null ? 0 : Tasks.Where(t => !t.Iscompleted).Count();
             var Ended = Tasks == null ? 0 : Tasks.Where(t => t.Iscompleted).Count();
-            var Late = Tasks == null ? 0 : Tasks.Where(t => !t.Iscompleted && (t.DueDate.HasValue && t.DueDate.Value.Date < DateTime.Today)).Count();
+            var Late = Tasks == null ? 0 : Tasks.Where(t => !t.Iscompleted && (t.DueDate.HasValue && t.DueDate.Value.Date < _dateTime.Today)).Count();
 
             
             return new OperationResult(true, $"Export terminé ! \n" +

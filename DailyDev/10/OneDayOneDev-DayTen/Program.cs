@@ -1,16 +1,14 @@
 ﻿
-using OneDayOneDev_DayEight;
-using OneDayOneDev_DayFive;
-using OneDayOneDev_DaySeven;
-using OneDayOneDev_DayTen;
-using System.Threading.Tasks;
+
+using OneDayOneDev_DayEleven;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        TaskService taskService = new TaskService();
-        ConsoleUi consoleUi = new ConsoleUi();
+        SystemDateTimeProvider systemDate = new SystemDateTimeProvider();
+        TaskService taskService = new TaskService(systemDate);
+        ConsoleUi consoleUi = new ConsoleUi(systemDate);
         var result = 0;
         var TaskId = -1;
 

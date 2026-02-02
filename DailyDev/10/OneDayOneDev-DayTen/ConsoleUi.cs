@@ -1,15 +1,8 @@
-﻿using OneDayOneDev_DayTen;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace OneDayOneDev_DayFive
+﻿namespace OneDayOneDev_DayEleven
 {
-    public class ConsoleUi
+    public class ConsoleUi(IDateTimeProvider DateTimeProvider)
     {
+        private readonly IDateTimeProvider _DateTime = DateTimeProvider;
         public void ShowTasksListWithSummary(List<TaskItem> List)
         {
             Console.Clear();
@@ -104,7 +97,7 @@ namespace OneDayOneDev_DayFive
             var Total = Tasks == null ? 0 : Tasks.Count();
             var NonEnded = Tasks == null ? 0 : Tasks.Where(t => !t.Iscompleted).Count();
             var Ended = Tasks == null ? 0 : Tasks.Where(t => t.Iscompleted).Count();
-            var Late = Tasks == null ? 0 : Tasks.Where(t => !t.Iscompleted && (t.DueDate.HasValue && t.DueDate.Value.Date < DateTime.Today)).Count();
+            var Late = Tasks == null ? 0 : Tasks.Where(t => !t.Iscompleted && (t.DueDate.HasValue && t.DueDate.Value.Date < _DateTime.Today)).Count();
 
             return new string($"Total tâches : {Total} \n" +
                 $"Terminées : {Ended} \n" +

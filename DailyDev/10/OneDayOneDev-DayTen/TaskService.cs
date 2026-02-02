@@ -1,20 +1,15 @@
-﻿using Microsoft.VisualBasic;
-using OneDayOneDev_DayEight;
-using OneDayOneDev_DayFive;
-using OneDayOneDev_DaySeven;
-using OneDayOneDev_DayTen;
-using System.Globalization;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using System.Globalization;
 
-namespace OneDayOneDev_DayFive
+namespace OneDayOneDev_DayEleven
 {
     
     public class TaskService
     {
-        List<TaskItem>? Tasks { get; set; }
+        List<TaskItem> Tasks { get; set; }
         FileHandler fileHandler { get; set; }
-        
+
+        private readonly IDateTimeProvider _DateTime;
+
        public OperationResult ExportToCSV(List<TaskItem> TaskToExport,MenuInfo TypeOfExport)
        {
             var sorted = TaskToExport.OrderBy(t => !t.Iscompleted).ThenBy(t => t.DueDate).ThenBy(t => t.Title).ToList();
@@ -30,17 +25,19 @@ namespace OneDayOneDev_DayFive
             return new OperationResult(true, $"Fichier sauvegardé ! ");
         }
 
-        public TaskService(List<TaskItem> InitialList)
+        public TaskService(List<TaskItem> InitialList, IDateTimeProvider DateTimeProvider)
         {
+            _DateTime = DateTimeProvider;
             Tasks = InitialList ?? new List<TaskItem>();
-            fileHandler = new FileHandler();
+            fileHandler = new FileHandler(DateTimeProvider);
         }
 
-        public TaskService()
+        public TaskService(IDateTimeProvider DateTimeProvider)
         { 
+            _DateTime = DateTimeProvider;
             Tasks = new List<TaskItem>();
-            fileHandler = new FileHandler();
-            Tasks = fileHandler.LoadTaskData();
+            fileHandler = new FileHandler(DateTimeProvider);
+            Tasks = fileHandler.LoadTaskData() ?? new List<TaskItem>();
         }
 
         #region UTILS
@@ -92,24 +89,25 @@ namespace OneDayOneDev_DayFive
         }
         public List<TaskItem> GetTaskByTitle(string Recherche)
         {
+            if (string.IsNullOrWhiteSpace(Recherche)) return new List<TaskItem>();
             return Tasks.Where(t => t.Title.Contains(Recherche.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         public List<TaskItem> GetTaskThatEndTodayAndNotOver()
         {
-            return GetNonEndedTasks().Where(t => (t.DueDate.HasValue && t.DueDate.Value.Date == DateTime.Today)).ToList();
+            return GetNonEndedTasks().Where(t => (t.DueDate.HasValue && t.DueDate.Value.Date == _DateTime.Today)).ToList();
         }
         public List<TaskItem> GetTaskThatEndTodayAndAreOver()
         {
-            return GetEndedTasks().Where(t => (t.DueDate.HasValue && t.DueDate.Value.Date == DateTime.Today)).ToList();
+            return GetEndedTasks().Where(t => (t.DueDate.HasValue && t.DueDate.Value.Date == _DateTime.Today)).ToList();
         }
         public List<TaskItem> GetLateTask()
         {
-            return GetNonEndedTasks().Where(t => (t.DueDate.HasValue && t.DueDate.Value.Date < DateTime.Today)).ToList();
+            return GetNonEndedTasks().Where(t => (t.DueDate.HasValue && t.DueDate.Value.Date < _DateTime.Today)).ToList();
         }
         public List<TaskItem> GetIncomingTask()
         {
-            return GetNonEndedTasks().Where(t => (t.DueDate.HasValue && t.DueDate.Value.Date >= DateTime.Today) || !t.DueDate.HasValue)
+            return GetNonEndedTasks().Where(t => (t.DueDate.HasValue && t.DueDate.Value.Date >= _DateTime.Today) || !t.DueDate.HasValue)
                                         .ToList();
         }
         public int GetNumberOfEndedTask()
@@ -136,9 +134,10 @@ namespace OneDayOneDev_DayFive
             if (string.IsNullOrWhiteSpace(TaskTitle))
                 return new OperationResult(false, "Le titre ne peut pas être vide.");
 
+            var normalized = TaskTitle.Trim();
+            var AlreadyExists = Tasks.Any(t => string.Equals(t.Title.Trim(), normalized, StringComparison.OrdinalIgnoreCase));
 
-            TaskItem? task = Tasks?.FirstOrDefault(t => t.Title == TaskTitle);
-            if (task != null)
+            if (AlreadyExists)
             {
                 return new OperationResult(false, "Une autre tâche possédant ce nom existe déja");
             }
@@ -151,7 +150,7 @@ namespace OneDayOneDev_DayFive
                 }
                 else
                 {
-                    Tasks?.Add(new TaskItem(id: GetNewId(), Title: TaskTitle, DateTime.Today, ParseDate(DueDate), IsCompleted: false,priority : priority));
+                    Tasks.Add(new TaskItem(id: GetNewId(), Title: normalized, _DateTime.Today, ParseDate(DueDate), IsCompleted: false,priority : priority));
                     return new OperationResult(true, "La création de la nouvelle tâche à réussi");
                 }
 
@@ -161,7 +160,7 @@ namespace OneDayOneDev_DayFive
 
         public OperationResult UpdateTask(int identifiant, string NewTitle, string NewDueDate, bool NewIscompleted,TaskPriority priority)
         {
-            if (Tasks?.Count() < 1)
+            if (Tasks.Count == 0)
             {
                 return new OperationResult(false, "Aucune tâches n'as été trouvée");
             }
@@ -174,7 +173,14 @@ namespace OneDayOneDev_DayFive
 
             if (!string.IsNullOrWhiteSpace(NewTitle))
             {
-                task.Title = NewTitle;
+                var normalized = NewTitle.Trim();
+                var exists = Tasks.Any(t => t.id != identifiant &&
+                    string.Equals(t.Title.Trim(), normalized, StringComparison.OrdinalIgnoreCase));
+
+                if (exists)
+                    return new OperationResult(false, "Une autre tâche possédant ce nom existe déjà");
+
+                task.Title = normalized;
             }
 
             if (!string.IsNullOrWhiteSpace(NewDueDate))
@@ -186,9 +192,15 @@ namespace OneDayOneDev_DayFive
                 task.DueDate = parsed;
             }
 
-
-
+            if (!task.Iscompleted && NewIscompleted)
+            {
+                task.OverDate = _DateTime.Today;
+            }
+              
             task.Iscompleted = NewIscompleted;
+
+            if (!NewIscompleted)
+                task.OverDate = null;
 
             task.Priority = priority;
 
@@ -198,7 +210,7 @@ namespace OneDayOneDev_DayFive
 
         public OperationResult SetTaskCompleted(int identifiant)
         {
-            if (Tasks?.Count() < 1)
+            if (Tasks.Count == 0)
             {
                 return new OperationResult(false, "Aucune tâches n'as été trouvée");
             }
@@ -212,7 +224,7 @@ namespace OneDayOneDev_DayFive
                     else
                     {
                         task.Iscompleted = true;
-                        task.OverDate = DateTime.Today;
+                        task.OverDate = _DateTime.Today;
                         return new OperationResult(true, $"La tâche n° {identifiant} est terminée");
                     }
                     
@@ -230,7 +242,7 @@ namespace OneDayOneDev_DayFive
         }
         public OperationResult DeleteTask(int identifiant)
         {
-            if(Tasks?.Count() <1)
+            if(Tasks.Count == 0)
             {
                 return new OperationResult(false, "Aucune tâches n'as été trouvée");
             }
@@ -242,7 +254,7 @@ namespace OneDayOneDev_DayFive
                 {
                     return new OperationResult(false, $"La tâche n° {identifiant} ne peux être supprimée car elle est déja terminée");
                 }
-                Tasks?.Remove(task);
+                Tasks.Remove(task);
                 return new OperationResult(true, $"La tâche n° {identifiant} à été supprimée");
 
             }
