@@ -28,16 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             SelectFolder = new Button();
             FolderPath = new Label();
             CreateFolder = new Button();
+            label1 = new Label();
+            notifyIcon1 = new NotifyIcon(components);
             SuspendLayout();
             // 
             // SelectFolder
             // 
-            SelectFolder.Location = new Point(83, 27);
+            SelectFolder.Location = new Point(28, 12);
             SelectFolder.Name = "SelectFolder";
-            SelectFolder.Size = new Size(192, 46);
+            SelectFolder.Size = new Size(658, 46);
             SelectFolder.TabIndex = 0;
             SelectFolder.Text = " Select folder";
             SelectFolder.UseVisualStyleBackColor = true;
@@ -46,15 +49,15 @@
             // FolderPath
             // 
             FolderPath.AutoSize = true;
-            FolderPath.Location = new Point(87, 85);
+            FolderPath.Location = new Point(28, 122);
             FolderPath.Name = "FolderPath";
-            FolderPath.Size = new Size(0, 32);
+            FolderPath.Size = new Size(136, 32);
             FolderPath.TabIndex = 1;
-            FolderPath.Click += FolderPath_Click;
+            FolderPath.Text = "Folder path";
             // 
             // CreateFolder
             // 
-            CreateFolder.Location = new Point(83, 379);
+            CreateFolder.Location = new Point(28, 64);
             CreateFolder.Name = "CreateFolder";
             CreateFolder.Size = new Size(658, 46);
             CreateFolder.TabIndex = 2;
@@ -62,11 +65,27 @@
             CreateFolder.UseVisualStyleBackColor = true;
             CreateFolder.Click += CreateFolder_Click;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(28, 170);
+            label1.Name = "label1";
+            label1.Size = new Size(78, 32);
+            label1.TabIndex = 3;
+            label1.Text = "label1";
+            label1.Click += label1_Click;
+            // 
+            // notifyIcon1
+            // 
+            notifyIcon1.Text = "notifyIcon1";
+            notifyIcon1.Visible = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(738, 211);
+            Controls.Add(label1);
             Controls.Add(CreateFolder);
             Controls.Add(FolderPath);
             Controls.Add(SelectFolder);
@@ -82,5 +101,7 @@
         private Button SelectFolder;
         private Label FolderPath;
         private Button CreateFolder;
+        private Label label1;
+        private NotifyIcon notifyIcon1;
     }
 }
