@@ -3,7 +3,7 @@ namespace OneDayOneDev_DayTwelve
     public partial class Form1 : Form
     {
         private SystemDateTimeProvider _dateTimeProvider;
-        public TaskService taskService;
+        private TaskService taskService;
         public Form1()
         {
             InitializeComponent();
@@ -30,11 +30,6 @@ namespace OneDayOneDev_DayTwelve
 
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void RafraichirList()
         {
             if (taskService.GetTaskList().Count > 0 && dataGridView1.ColumnCount == 0)
@@ -49,8 +44,8 @@ namespace OneDayOneDev_DayTwelve
             }
 
             dataGridView1.Rows.Clear();
-
-            foreach (var item in taskService.GetTaskList())
+            var taskList = taskService.GetTaskList();
+            foreach (var item in taskList)
             {
                 dataGridView1.Rows.Add(item.id,item.Title,item.Iscompleted, item.CreatedAt?.ToString("dd/MM/yyyy"), item.DueDate?.ToString("dd/MM/yyyy"),item.OverDate?.ToString("dd/MM/yyyy"), item.Priority);
                 
@@ -64,8 +59,8 @@ namespace OneDayOneDev_DayTwelve
 
             if (Enum.TryParse(PriorityComboBox?.SelectedItem?.ToString(), out TaskPriority enumValue))
             {
-                var dateCheck = DateTextBox.Text.Replace(" ",string.Empty);
-                var result = taskService.CreateNewTask(TitleTextBox.Text, dateCheck == "//" ? string.Empty : DateTextBox.Text, enumValue);
+                string? dueDate = DateTextBox.MaskCompleted ? DateTextBox.Text : null;
+                var result = taskService.CreateNewTask(TitleTextBox.Text, dueDate, enumValue);
 
                 if (result.succes)
                 {
@@ -87,16 +82,6 @@ namespace OneDayOneDev_DayTwelve
 
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
         private void button2_Click(object sender, EventArgs e)
         {
             RafraichirList();
@@ -104,16 +89,7 @@ namespace OneDayOneDev_DayTwelve
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Si fermeture via la croix, Alt+F4, fermeture Windows, etc.
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                taskService.SaveData();
-            }
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
+            taskService.SaveData();
         }
 
         private void ResetField()

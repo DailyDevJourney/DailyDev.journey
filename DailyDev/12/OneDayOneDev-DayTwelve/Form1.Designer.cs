@@ -41,8 +41,6 @@ namespace OneDayOneDev_DayTwelve
             label1 = new Label();
             label3 = new Label();
             label4 = new Label();
-            Id = new DataGridViewTextBoxColumn();
-            Titre = new DataGridViewTextBoxColumn();
             DateTextBox = new MaskedTextBox();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
@@ -61,7 +59,6 @@ namespace OneDayOneDev_DayTwelve
             PriorityComboBox.Name = "PriorityComboBox";
             PriorityComboBox.Size = new Size(317, 40);
             PriorityComboBox.TabIndex = 2;
-            PriorityComboBox.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             // 
             // button1
             // 
@@ -88,13 +85,12 @@ namespace OneDayOneDev_DayTwelve
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.AllowUserToDeleteRows = false;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Enabled = false;
+            dataGridView1.ReadOnly = true;
             dataGridView1.Location = new Point(21, 213);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 82;
             dataGridView1.Size = new Size(964, 404);
             dataGridView1.TabIndex = 5;
-            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             // 
             // label1
             // 
@@ -104,7 +100,6 @@ namespace OneDayOneDev_DayTwelve
             label1.Size = new Size(74, 32);
             label1.TabIndex = 6;
             label1.Text = "Titre :";
-            label1.Click += label1_Click;
             // 
             // label3
             // 
@@ -114,7 +109,6 @@ namespace OneDayOneDev_DayTwelve
             label3.Size = new Size(177, 32);
             label3.TabIndex = 8;
             label3.Text = "Date échénace:";
-            label3.Click += label3_Click;
             // 
             // label4
             // 
@@ -124,20 +118,7 @@ namespace OneDayOneDev_DayTwelve
             label4.Size = new Size(102, 32);
             label4.TabIndex = 9;
             label4.Text = "Priorité :";
-            // 
-            // Id
-            // 
-            Id.HeaderText = "Column1";
-            Id.MinimumWidth = 10;
-            Id.Name = "Id";
-            Id.Width = 200;
-            // 
-            // Titre
-            // 
-            Titre.HeaderText = "Column1";
-            Titre.MinimumWidth = 10;
-            Titre.Name = "Titre";
-            Titre.Width = 200;
+            
             // 
             // DateTextBox
             // 
@@ -180,8 +161,6 @@ namespace OneDayOneDev_DayTwelve
         private Label label1;
         private Label label3;
         private Label label4;
-        private DataGridViewTextBoxColumn Id;
-        private DataGridViewTextBoxColumn Titre;
         private MaskedTextBox DateTextBox;
     }
 }
