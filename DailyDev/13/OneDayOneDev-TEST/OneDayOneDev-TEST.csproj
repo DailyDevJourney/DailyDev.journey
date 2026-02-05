@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
-    <RootNamespace>OneDayOneDev_DayEleven</RootNamespace>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>OneDayOneDev_TEST</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\13\OneDayOneDev-DayThirteen\OneDayOneDev-DayThirteen.csproj" />
+    <ProjectReference Include="..\OneDayOneDev-DayThirteen\OneDayOneDev-DayThirteen.csproj" />
   </ItemGroup>
 
   <ItemGroup>

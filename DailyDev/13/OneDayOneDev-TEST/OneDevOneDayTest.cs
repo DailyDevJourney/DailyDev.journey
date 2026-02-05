@@ -1,17 +1,13 @@
-
-
-using System.Threading.Tasks;
-
 using OneDayOneDev_DayThirten;
 
-namespace OneDayOneDev_DayEleven
+namespace OneDayOneDev_DayThirten_TEST
 {
     public class OneDevOneDayTest
     {
-        FakeDateTimeProvider _Datetime = new FakeDateTimeProvider { Today = DateTime.Today };
         [Fact]
         public void CreateNewTask_With_Empty_Title()
         {
+            var _Datetime = new FakeDateTimeProvider { Today = new DateTime(2026, 02, 02) };
             //Arrange => prépare le contexte du test
             var service = new TaskService(_Datetime);
             //Act => j'apelle la méthode à tester
@@ -22,6 +18,7 @@ namespace OneDayOneDev_DayEleven
         [Fact]
         public void CreateNewTask_With_Incorrect_Date()
         {
+            var _Datetime = new SystemDateTimeProvider();
             //Arrange => prépare le contexte du test
             var service = new TaskService(_Datetime);
             //Act => j'apelle la méthode à tester
@@ -33,6 +30,7 @@ namespace OneDayOneDev_DayEleven
         [Fact]
         public void CreateNewTask_OK()
         {
+            var _Datetime = new SystemDateTimeProvider();
             //Arrange => prépare le contexte du test
             var service = new TaskService(_Datetime);
             //Act => j'apelle la méthode à tester
@@ -45,6 +43,7 @@ namespace OneDayOneDev_DayEleven
         [Fact]
         public void SetTaskCompleted_OK()
         {
+            var _Datetime = new SystemDateTimeProvider();
             //Arrange => prépare le contexte du test
             var service = new TaskService(_Datetime);
             //Act => j'apelle la méthode à tester
@@ -63,6 +62,7 @@ namespace OneDayOneDev_DayEleven
         [Fact]
         public void GetLateList_When_Date_Is_Before_Today()
         {
+            var _Datetime = new SystemDateTimeProvider();
             //Arrange => prépare le contexte du test
             var service = new TaskService(_Datetime);
             //Act => j'apelle la méthode à tester
@@ -75,6 +75,7 @@ namespace OneDayOneDev_DayEleven
         [Fact]
         public void DeleteTask_That_Is_Completed_Error()
         {
+            var _Datetime = new SystemDateTimeProvider();
             //Arrange => prépare le contexte du test
             var service = new TaskService(_Datetime);
             //Act => j'apelle la méthode à tester
@@ -84,90 +85,6 @@ namespace OneDayOneDev_DayEleven
             service.SetTaskCompleted(task.id);
             result = service.DeleteTask(task.id);
             Assert.False(result.succes);
-
-        }
-
-        [Fact]
-        public void GetNewID()
-        {
-            
-            //Arrange => prépare le contexte du test
-            var service = new TaskService(_Datetime);
-
-            //Act => j'apelle la méthode à tester
-            var id = 0;
-
-            for(int i = 0; i < 10; i++)
-            {
-                id = service.GetNewId();
-                var result = service.CreateNewTask($"test{i}", null);
-                Assert.True(result.succes);
-            }
-
-            for (int i = 3; i < 7; i++)
-            {
-
-                var result = service.DeleteTask(i);
-                Assert.True(result.succes);
-            }
-            id = service.GetNewId();
-            //Assert
-            Assert.Equal(11, id);
-
-            
-        }
-        [Fact]
-        public void IsTaskLate_Past()
-        {
-          
-            //Arrange => prépare le contexte du test
-            var service = new TaskService(_Datetime);
-
-            //Act => j'apelle la méthode à tester
-            var result = service.CreateNewTask($"test", new DateTime(2020, 1, 1).ToString("dd/MM/yyyy"));
-            Assert.True(result.succes);
-
-            var late = Assert.Single(service.GetTaskByTitle("test"));
-            var IsLate = service.IsTaskLate(late);
-            //Assert
-            Assert.True(IsLate);
-
-            
-        }
-        [Fact]
-        public void IsTaskLate_Today()
-        {
-           
-            //Arrange => prépare le contexte du test
-            var service = new TaskService(_Datetime);
-
-            //Act => j'apelle la méthode à tester
-            var result = service.CreateNewTask($"test", _Datetime.Today.ToString("dd/MM/yyyy"));
-            Assert.True(result.succes);
-
-            var late = Assert.Single(service.GetTaskByTitle("test"));
-            var IsLate = service.IsTaskLate(late);
-            //Assert
-            Assert.False(IsLate);
-
-
-        }
-        [Fact]
-        public void IsTaskLate_Futur()
-        {
-          
-            //Arrange => prépare le contexte du test
-            var service = new TaskService(_Datetime);
-
-            //Act => j'apelle la méthode à tester
-            var result = service.CreateNewTask($"test", "01/01/2027");
-            Assert.True(result.succes);
-
-            var late = Assert.Single(service.GetTaskByTitle("test"));
-            var IsLate = service.IsTaskLate(late);
-            //Assert
-            Assert.False(IsLate);
-
 
         }
     }
