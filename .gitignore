@@ -1,0 +1,38 @@
+# Videos et musique
+*.mp4
+*.mp3
+
+# Build results
+bin/
+obj/
+
+# Visual Studio
+.vs/
+**.user
+**.suo
+**.userosscache
+**.sln.docstates
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Publish
+publish/
+
+# Test results
+TestResults/
+
+# NuGet
+packages/
+*.nupkg
+
+# Local config
+appsettings.Development.json
