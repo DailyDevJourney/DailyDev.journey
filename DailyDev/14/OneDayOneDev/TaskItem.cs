@@ -7,6 +7,7 @@
         public bool Iscompleted { get; set; }
 
         public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdateAt { get; set; }
         public DateTime? DueDate { get; set; }
 
         public DateTime? OverDate { get; set; }

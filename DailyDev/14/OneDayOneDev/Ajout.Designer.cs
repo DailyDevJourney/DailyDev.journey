@@ -36,6 +36,7 @@
             BTNCancel = new Button();
             ProprietyComboBox = new ComboBox();
             label3 = new Label();
+            OverCheckBox = new CheckBox();
             SuspendLayout();
             // 
             // BTNAdd
@@ -109,11 +110,22 @@
             label3.TabIndex = 7;
             label3.Text = "Priorité :";
             // 
+            // OverCheckBox
+            // 
+            OverCheckBox.AutoSize = true;
+            OverCheckBox.Location = new Point(30, 403);
+            OverCheckBox.Name = "OverCheckBox";
+            OverCheckBox.Size = new Size(152, 36);
+            OverCheckBox.TabIndex = 8;
+            OverCheckBox.Text = " Terminée";
+            OverCheckBox.UseVisualStyleBackColor = true;
+            // 
             // Ajout
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(616, 462);
+            Controls.Add(OverCheckBox);
             Controls.Add(label3);
             Controls.Add(ProprietyComboBox);
             Controls.Add(BTNCancel);
@@ -139,5 +151,6 @@
         private Button BTNCancel;
         private ComboBox ProprietyComboBox;
         private Label label3;
+        private CheckBox OverCheckBox;
     }
 }

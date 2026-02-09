@@ -1,4 +1,5 @@
-﻿using OneDayOneDev_DayThirteen;
+﻿using Microsoft.VisualBasic;
+using OneDayOneDev_DayThirteen;
 using System.Globalization;
 
 namespace OneDayOneDev
@@ -8,8 +9,9 @@ namespace OneDayOneDev
     {
         List<TaskItem> Tasks { get; set; }
         FileHandler fileHandler { get; set; }
+        Log LogHandler { get; set; }
 
-        TaskRules taskRules { get; set; }
+        public TaskRules taskRules { get; set; }
 
         private readonly IDateTimeProvider _DateTime;
 
@@ -34,6 +36,7 @@ namespace OneDayOneDev
             Tasks = InitialList ?? new List<TaskItem>();
             fileHandler = new FileHandler(DateTimeProvider);
             taskRules = new TaskRules();
+            LogHandler = new Log(fileHandler);
         }
 
         public TaskService(IDateTimeProvider DateTimeProvider)
@@ -43,6 +46,7 @@ namespace OneDayOneDev
             fileHandler = new FileHandler(DateTimeProvider);
             Tasks = fileHandler.LoadTaskData() ?? new List<TaskItem>();
             taskRules = new TaskRules();
+            LogHandler = new Log(fileHandler);
         }
 
         #region UTILS
@@ -165,6 +169,9 @@ namespace OneDayOneDev
                 {
                     
                     Tasks.Add(new TaskItem(id: GetNewId(), Title: normalized, _DateTime.Today, ParseDate(DueDate), IsCompleted: false,priority : priority));
+                    LogHandler.AddLog($"Création d'une nouvelle tâche le {_DateTime.Today.ToString("dd/MM/yyyy")} \n" +
+                                        $"Title : {normalized} \nEchéance : {ParseDate(DueDate)}\n" +
+                                        $"Priorité : {priority.GetString()}");
                     return new OperationResult(true, "La création de la nouvelle tâche à réussi");
                 }
 
@@ -217,6 +224,12 @@ namespace OneDayOneDev
                 task.OverDate = null;
 
             task.Priority = priority;
+            task.UpdateAt = _DateTime.Today;
+
+            LogHandler.AddLog($"Tâche mise à jour le {_DateTime.Today.ToString("dd/MM/yyyy")} \n" +
+                                        $"Title : {task.Title} \n" +
+                                        $"Echéance : {task.DueDate}\n" +
+                                        $"Priorité : {task.Priority.GetString()}");
 
             return new OperationResult(true, $"La tâche correspond à l'identifiant {identifiant} à été mise à jour");
 
@@ -244,7 +257,11 @@ namespace OneDayOneDev
                     {
                         task.Iscompleted = true;
                         task.OverDate = _DateTime.Today;
-                        return new OperationResult(true, $"La tâche n° {identifiant} est terminée");
+                        LogHandler.AddLog($"Tâche terminée le {_DateTime.Today.ToString("dd/MM/yyyy")} \n" +
+                                            $"Title : {task.Title} \n" +
+                                            $"Echéance : {task.DueDate}\n" +
+                                            $"Priorité : {task.Priority.GetString()}");
+                    return new OperationResult(true, $"La tâche n° {identifiant} est terminée");
                     }
                     
                    
@@ -276,6 +293,10 @@ namespace OneDayOneDev
                 else
                 {
                     Tasks.Remove(task);
+                    LogHandler.AddLog($"Tâche supprimée le {_DateTime.Today.ToString("dd/MM/yyyy")} \n" +
+                                            $"Title : {task.Title} \n" +
+                                            $"Echéance : {task.DueDate}\n" +
+                                            $"Priorité : {task.Priority.GetString()}");
                     return new OperationResult(true, $"La tâche n° {identifiant} à été supprimée");
                 }
 

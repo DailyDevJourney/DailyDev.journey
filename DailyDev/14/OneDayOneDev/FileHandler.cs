@@ -6,8 +6,11 @@ namespace OneDayOneDev
     {
         public readonly IDateTimeProvider _dateTime = dateTimeProvider;
         readonly string TaskDataPath = $"{AppContext.BaseDirectory}ListeTache.txt";
+        readonly string LogPath = $"{AppContext.BaseDirectory}Log.txt";
         readonly string TasksExportPath = $"{AppContext.BaseDirectory}TaskExport";
 
+
+        public string GetLogPath() { return LogPath; }
         
         public List<TaskItem>? LoadTaskData()
         {
@@ -123,8 +126,8 @@ namespace OneDayOneDev
 
             }
 
-
-            File.AppendAllText(exportPath, "Id;Title;CreatedAt;DueDate;OverDate;IsCompleted;Priority\n");
+            AddTextToFile(exportPath, "Id;Title;CreatedAt;DueDate;OverDate;IsCompleted;Priority\n");
+            
             File.AppendAllLines(exportPath,
                 Tasks.Select(t => $"{t.id};{t.Title};{(t.CreatedAt == null ? "" : t.CreatedAt?.ToString("dd/MM/yyyy"))};{(t.DueDate == null ? "" : t.DueDate?.ToString("dd/MM/yyyy"))};{(t.OverDate == null ? "" : t.OverDate?.ToString("dd/MM/yyyy"))};{t.Iscompleted};{Enum.GetName(typeof(TaskPriority), t.Priority)}"));
 
@@ -139,6 +142,21 @@ namespace OneDayOneDev
                 $"Terminées : {Ended} \n" +
                 $"Restantes : {NonEnded}\n" +
                 $"En retard : {Late}");
+        }
+
+        public void CheckLog()
+        {
+            if (!File.Exists(LogPath))
+            {
+                var myFile = File.Create(LogPath);
+                myFile.Close();
+
+            }
+        }
+
+        public void AddTextToFile(string FilePath,string message)
+        {
+            File.AppendAllText(FilePath, message);
         }
     }
 }

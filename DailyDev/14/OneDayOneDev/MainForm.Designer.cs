@@ -34,16 +34,16 @@ namespace OneDayOneDev
         private void InitializeComponent()
         {
             BTNAjouter = new Button();
-            button2 = new Button();
             ListeTache = new DataGridView();
             BTNModifier = new Button();
             BTNDelete = new Button();
+            BTNOver = new Button();
             ((System.ComponentModel.ISupportInitialize)ListeTache).BeginInit();
             SuspendLayout();
             // 
             // BTNAjouter
             // 
-            BTNAjouter.Location = new Point(21, 12);
+            BTNAjouter.Location = new Point(21, 32);
             BTNAjouter.Name = "BTNAjouter";
             BTNAjouter.Size = new Size(363, 54);
             BTNAjouter.TabIndex = 3;
@@ -51,31 +51,22 @@ namespace OneDayOneDev
             BTNAjouter.UseVisualStyleBackColor = true;
             BTNAjouter.Click += BTNAjouter_Click;
             // 
-            // button2
-            // 
-            button2.Location = new Point(835, 161);
-            button2.Name = "button2";
-            button2.Size = new Size(150, 46);
-            button2.TabIndex = 4;
-            button2.Text = "Rafraichir";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
-            // 
             // ListeTache
             // 
             ListeTache.AllowUserToAddRows = false;
             ListeTache.AllowUserToDeleteRows = false;
             ListeTache.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            ListeTache.Location = new Point(21, 213);
+            ListeTache.Location = new Point(21, 264);
             ListeTache.Name = "ListeTache";
             ListeTache.ReadOnly = true;
             ListeTache.RowHeadersWidth = 82;
-            ListeTache.Size = new Size(964, 404);
+            ListeTache.Size = new Size(964, 353);
             ListeTache.TabIndex = 5;
+            ListeTache.CellDoubleClick += ListeTache_DoubleClic;
             // 
             // BTNModifier
             // 
-            BTNModifier.Location = new Point(21, 72);
+            BTNModifier.Location = new Point(21, 144);
             BTNModifier.Name = "BTNModifier";
             BTNModifier.Size = new Size(363, 54);
             BTNModifier.TabIndex = 6;
@@ -85,7 +76,7 @@ namespace OneDayOneDev
             // 
             // BTNDelete
             // 
-            BTNDelete.Location = new Point(21, 132);
+            BTNDelete.Location = new Point(21, 204);
             BTNDelete.Name = "BTNDelete";
             BTNDelete.Size = new Size(363, 54);
             BTNDelete.TabIndex = 7;
@@ -93,15 +84,25 @@ namespace OneDayOneDev
             BTNDelete.UseVisualStyleBackColor = true;
             BTNDelete.Click += BTNDelete_Click;
             // 
+            // BTNOver
+            // 
+            BTNOver.Location = new Point(21, 92);
+            BTNOver.Name = "BTNOver";
+            BTNOver.Size = new Size(363, 46);
+            BTNOver.TabIndex = 8;
+            BTNOver.Text = "Terminée une tâche";
+            BTNOver.UseVisualStyleBackColor = true;
+            BTNOver.Click += BTNOver_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(997, 629);
+            Controls.Add(BTNOver);
             Controls.Add(BTNDelete);
             Controls.Add(BTNModifier);
             Controls.Add(ListeTache);
-            Controls.Add(button2);
             Controls.Add(BTNAjouter);
             Name = "MainForm";
             Text = "Form1";
@@ -112,9 +113,9 @@ namespace OneDayOneDev
 
         #endregion
         private Button BTNAjouter;
-        private Button button2;
         private DataGridView ListeTache;
         private Button BTNModifier;
         private Button BTNDelete;
+        private Button BTNOver;
     }
 }

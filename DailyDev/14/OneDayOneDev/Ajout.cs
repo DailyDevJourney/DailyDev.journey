@@ -41,11 +41,13 @@ namespace OneDayOneDev_DayThirteen
                 ProprietyComboBox.SelectedIndex = 0;
             }
 
+            OverCheckBox.Visible = (this.task == null ) ? false : true;
             if (this.task != null)
             {
                 BTNAdd.Text = "Modifier";
                 TitleTextBox.Text = this.task.Title;
                 DueDateTextBox.Text = this.task.DueDate == null ? string.Empty : this.task.DueDate.ToString();
+                OverCheckBox.Checked = this.task.Iscompleted;
                 if (Enum.TryParse(ProprietyComboBox?.SelectedItem?.ToString(), out TaskPriority enumValue))
                 {
                     ProprietyComboBox.SelectedIndex = enumValue.GetNumber();
@@ -63,18 +65,46 @@ namespace OneDayOneDev_DayThirteen
             if (Enum.TryParse(ProprietyComboBox?.SelectedItem?.ToString(), out TaskPriority enumValue))
             {
                 string? dueDate = DueDateTextBox.MaskCompleted ? DueDateTextBox.Text : null;
-                var result = taskService.CreateNewTask(TitleTextBox.Text, dueDate, enumValue);
-                MessageBox.Show(result.message,(result.succes) ? "Création réussi" : "Erreur pendant la création");
+                OperationResult? result = null;
+                if( this.task != null)
+                {
+                    if(this.task.Iscompleted && !OverCheckBox.Checked)
+                    {
+                        var answer = MessageBox.Show($"La tâche n° {this.task.id} est terminée , souhaitez-vous la reprendre ?", "Confirmation demandée", MessageBoxButtons.OKCancel);
+                        if (answer == DialogResult.OK)
+                        {
+                            result = taskService.UpdateTask(this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
+                        }
+                        else
+                        {
+                            OverCheckBox.Checked = this.task.Iscompleted;
+                        }
+                    }
+                    else
+                    {
+                        result = taskService.UpdateTask(this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
+                    }
+                        
+                }
+                else
+                {
+                    result = taskService.CreateNewTask(TitleTextBox.Text, dueDate, enumValue);
+                }
+
+                MessageBox.Show(result.message, (result.succes) ? (this.task == null) ? "Création réussie" : "Mise à jour réussie" : (this.task == null) ? "Erreur pendant la création" : "Erreur pendant la mise à jour");
+                
                 if (result.succes)
                 {
-                    
+
                     this.Close();
                 }
             }
             else
             {
-                MessageBox.Show("Erreur dans la sélection de la proprieté","Erreur");
+                MessageBox.Show("Erreur dans la sélection de la proprieté", "Erreur");
             }
+            
+            
         }
 
         private void Ajout_FormClosing(object sender, FormClosingEventArgs e)
