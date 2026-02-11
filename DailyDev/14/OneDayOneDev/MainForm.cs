@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using OneDayOneDev_DayThirteen;
 
 namespace OneDayOneDev
@@ -5,14 +6,16 @@ namespace OneDayOneDev
     public partial class MainForm : Form
     {
         private readonly SystemDateTimeProvider _dateTimeProvider;
-        private readonly TaskService taskService;
-        public MainForm(TaskService taskService, SystemDateTimeProvider _dateTimeProvider)
+        private readonly TaskRules _taskRules;
+        private readonly TaskRepository _taskRepository;
+        public MainForm(TaskRepository _taskRepository, TaskRules _taskRules ,SystemDateTimeProvider _dateTimeProvider)
         {
 
             InitializeComponent();
 
             this._dateTimeProvider = _dateTimeProvider;
-            this.taskService = taskService;
+            this._taskRepository = _taskRepository;
+            this._taskRules = _taskRules;
 
 
             this.FormClosing += Form1_FormClosing;
@@ -20,6 +23,20 @@ namespace OneDayOneDev
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            
+
+            FileHandler temp = new FileHandler(_dateTimeProvider);
+            var tasks = temp.LoadTaskData();
+            if (tasks != null)
+            {
+                foreach (var task in tasks)
+                {
+                    this._taskRepository.AddTask(task);
+                }
+
+                temp.DeleteFile(temp.TaskDataPath);
+                
+            }
             this.Text = "OneDayOneDev";
             ListeTache.AutoGenerateColumns = true;
             RafraichirList();
@@ -30,7 +47,7 @@ namespace OneDayOneDev
 
 
             ListeTache.DataSource = null;
-            ListeTache.DataSource = this.taskService.GetTaskList();
+            ListeTache.DataSource = this._taskRepository.GetAllTask();
 
             foreach (DataGridViewRow row in ListeTache.Rows)
             {
@@ -38,11 +55,11 @@ namespace OneDayOneDev
 
                 if (parsable)
                 {
-                    var taskFromRow = taskService.GetTaskById(id);
+                    var taskFromRow = this._taskRepository.GetTaskById(id);
 
                     if (taskFromRow != null)
                     {
-                        if (taskService.taskRules.IsTaskLate(taskFromRow, _dateTimeProvider.Today))
+                        if (this._taskRules.IsTaskLate(taskFromRow, _dateTimeProvider.Today))
                         {
                             row.DefaultCellStyle.BackColor = Color.LightCoral;
                         }
@@ -66,7 +83,7 @@ namespace OneDayOneDev
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            taskService.SaveData();
+            
         }
 
         private DataGridViewRow? GetSelectedRow()
@@ -88,7 +105,7 @@ namespace OneDayOneDev
 
         private void BTNAjouter_Click(object sender, EventArgs e)
         {
-            using (var addForm = new Ajout(this.taskService, this._dateTimeProvider))
+            using (var addForm = new Ajout(this._taskRepository, this._dateTimeProvider))
             {
                 addForm.Text = "Ajouter une tâche";
                 addForm.ShowDialog(this);
@@ -108,7 +125,7 @@ namespace OneDayOneDev
                 if (parsable)
                 {
 
-                    using (var addForm = new Ajout(this.taskService, this._dateTimeProvider, this.taskService.GetTaskById(id)))
+                    using (var addForm = new Ajout(this._taskRepository, this._dateTimeProvider, this._taskRepository.GetTaskById(id)))
                     {
                         addForm.Text = "Modifier une tâche";
                         addForm.ShowDialog(this);
@@ -136,7 +153,7 @@ namespace OneDayOneDev
                     var result = MessageBox.Show($"souhaitez-vous supprimer la tâche n° {id}?", "Confirmation demandée", MessageBoxButtons.OKCancel);
                     if (result == DialogResult.OK)
                     {
-                        var deletetask = taskService.DeleteTask(id);
+                        var deletetask = this._taskRepository.DeleteTask(id);
                         MessageBox.Show(deletetask.message);
                     }
 
@@ -165,7 +182,7 @@ namespace OneDayOneDev
                     var result = MessageBox.Show($"souhaitez-vous terminée la tâche n° {id}?", "Confirmation demandée", MessageBoxButtons.OKCancel);
                     if (result == DialogResult.OK)
                     {
-                        var EndTask = taskService.SetTaskCompleted(id);
+                        var EndTask = this._taskRepository.SetTaskCompleted(id);
                         MessageBox.Show(EndTask.message);
                     }
 

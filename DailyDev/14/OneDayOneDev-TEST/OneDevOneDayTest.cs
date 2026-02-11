@@ -131,7 +131,7 @@ namespace OneDayOneDev_Test
             //Arrange => prépare le contexte du test
             var rules = new TaskRules();
 
-            var taskitem = new TaskItem( 1,"test", DateTime.Today, new DateTime(2020, 1, 1));
+            var taskitem = new TaskItem("test", DateTime.Today, new DateTime(2020, 1, 1));
 
             //Act => j'apelle la méthode à tester
             var result = rules.IsTaskLate(taskitem, DateTime.Today);
@@ -145,7 +145,7 @@ namespace OneDayOneDev_Test
             //Arrange => prépare le contexte du test
             var rules = new TaskRules();
 
-            var taskitem = new TaskItem(1, "test", _Datetime.Today, DateTime.Today);
+            var taskitem = new TaskItem("test", _Datetime.Today, DateTime.Today);
 
             //Act => j'apelle la méthode à tester
             var result = rules.IsTaskLate(taskitem, _Datetime.Today);
@@ -160,7 +160,7 @@ namespace OneDayOneDev_Test
             //Arrange => prépare le contexte du test
             var rules = new TaskRules();
 
-            var taskitem = new TaskItem(1, "test", _Datetime.Today, new DateTime(2027, 1, 1));
+            var taskitem = new TaskItem("test", _Datetime.Today, new DateTime(2027, 1, 1));
 
             //Act => j'apelle la méthode à tester
             var result = rules.IsTaskLate(taskitem, _Datetime.Today);

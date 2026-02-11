@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using OneDayOneDev_DayThirteen;
+
 namespace OneDayOneDev
 {
     internal static class Program
@@ -9,10 +12,11 @@ namespace OneDayOneDev
         static void Main()
         {
             var _dateTimeProvider = new SystemDateTimeProvider();
-            var taskService = new TaskService(_dateTimeProvider);
+            var taskRepository = new TaskRepository();
+            var taskrules = new TaskRules();
 
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm(taskService,_dateTimeProvider));
+            Application.Run(new MainForm(taskRepository, taskrules,_dateTimeProvider));
         }
     }
 }

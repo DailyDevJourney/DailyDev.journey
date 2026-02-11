@@ -5,11 +5,14 @@ namespace OneDayOneDev
     public class FileHandler(IDateTimeProvider dateTimeProvider)
     {
         public readonly IDateTimeProvider _dateTime = dateTimeProvider;
-        readonly string TaskDataPath = $"{AppContext.BaseDirectory}ListeTache.txt";
-        readonly string LogPath = $"{AppContext.BaseDirectory}Log.txt";
-        readonly string TasksExportPath = $"{AppContext.BaseDirectory}TaskExport";
+        public readonly string TaskDataPath = $"{AppContext.BaseDirectory}ListeTache.txt";
+        public readonly string LogPath = $"{AppContext.BaseDirectory}Log.txt";
+        public readonly string TasksExportPath = $"{AppContext.BaseDirectory}TaskExport";
 
-
+        public void DeleteFile (string Path)
+        {
+            File.Delete(Path);
+        }
         public string GetLogPath() { return LogPath; }
         
         public List<TaskItem>? LoadTaskData()

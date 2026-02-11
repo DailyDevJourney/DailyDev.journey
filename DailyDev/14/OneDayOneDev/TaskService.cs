@@ -11,6 +11,7 @@ namespace OneDayOneDev
         FileHandler fileHandler { get; set; }
         Log LogHandler { get; set; }
 
+
         public TaskRules taskRules { get; set; }
 
         private readonly IDateTimeProvider _DateTime;

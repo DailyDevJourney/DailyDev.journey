@@ -14,15 +14,15 @@ namespace OneDayOneDev_DayThirteen
     public partial class Ajout : Form
     {
         private readonly SystemDateTimeProvider _dateTimeProvider;
-        private readonly TaskService taskService;
+        private readonly TaskRepository _taskRepository;
         private readonly TaskItem? task;
 
-        public Ajout(TaskService taskService, SystemDateTimeProvider _dateTimeProvider,TaskItem? task = null)
+        public Ajout(TaskRepository _taskRepository, SystemDateTimeProvider _dateTimeProvider,TaskItem? task = null)
         {
             InitializeComponent();
             this.FormClosing += Ajout_FormClosing;
             this._dateTimeProvider = _dateTimeProvider;
-            this.taskService = taskService;
+            this._taskRepository = _taskRepository;
             this.task = task;
         }
         
@@ -73,7 +73,7 @@ namespace OneDayOneDev_DayThirteen
                         var answer = MessageBox.Show($"La tâche n° {this.task.id} est terminée , souhaitez-vous la reprendre ?", "Confirmation demandée", MessageBoxButtons.OKCancel);
                         if (answer == DialogResult.OK)
                         {
-                            result = taskService.UpdateTask(this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
+                            result = _taskRepository.UpdateTask(this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
                         }
                         else
                         {
@@ -82,13 +82,13 @@ namespace OneDayOneDev_DayThirteen
                     }
                     else
                     {
-                        result = taskService.UpdateTask(this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
+                        result = _taskRepository.UpdateTask(this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
                     }
                         
                 }
                 else
                 {
-                    result = taskService.CreateNewTask(TitleTextBox.Text, dueDate, enumValue);
+                    result = _taskRepository.AddTask(TitleTextBox.Text, dueDate, enumValue);
                 }
 
                 MessageBox.Show(result.message, (result.succes) ? (this.task == null) ? "Création réussie" : "Mise à jour réussie" : (this.task == null) ? "Erreur pendant la création" : "Erreur pendant la mise à jour");
