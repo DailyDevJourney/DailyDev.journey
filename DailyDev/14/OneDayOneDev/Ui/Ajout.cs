@@ -1,4 +1,10 @@
 ﻿using OneDayOneDev;
+using OneDayOneDev.Command;
+using OneDayOneDev.DataWindow;
+using OneDayOneDev.Repository;
+using OneDayOneDev.Service;
+using OneDayOneDev.Service.Interface;
+using OneDayOneDev.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,16 +20,18 @@ namespace OneDayOneDev_DayThirteen
     public partial class Ajout : Form
     {
         private readonly SystemDateTimeProvider _dateTimeProvider;
-        private readonly TaskRepository _taskRepository;
+        private readonly OneDayOneDev.Service.Interface.ITaskService _taskService;
+        private readonly CommandManager _commandManager;
         private readonly TaskItem? task;
 
-        public Ajout(TaskRepository _taskRepository, SystemDateTimeProvider _dateTimeProvider,TaskItem? task = null)
+        public Ajout(CommandManager _cmdManager, OneDayOneDev.Service.Interface.ITaskService _taskRepository, SystemDateTimeProvider _dateTimeProvider,TaskItem? task = null)
         {
             InitializeComponent();
             this.FormClosing += Ajout_FormClosing;
             this._dateTimeProvider = _dateTimeProvider;
-            this._taskRepository = _taskRepository;
+            this._taskService = _taskRepository;
             this.task = task;
+            this._commandManager = _cmdManager;
         }
         
 
@@ -73,7 +81,10 @@ namespace OneDayOneDev_DayThirteen
                         var answer = MessageBox.Show($"La tâche n° {this.task.id} est terminée , souhaitez-vous la reprendre ?", "Confirmation demandée", MessageBoxButtons.OKCancel);
                         if (answer == DialogResult.OK)
                         {
-                            result = _taskRepository.UpdateTask(this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
+
+                            var cmd = new UpdateCommand(this._taskService, this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
+
+                            result = this._commandManager.Execute(cmd);
                         }
                         else
                         {
@@ -82,20 +93,26 @@ namespace OneDayOneDev_DayThirteen
                     }
                     else
                     {
-                        result = _taskRepository.UpdateTask(this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
+                        var cmd = new UpdateCommand(this._taskService, this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
+
+                        result = this._commandManager.Execute(cmd);
                     }
                         
                 }
                 else
                 {
-                    result = _taskRepository.AddTask(TitleTextBox.Text, dueDate, enumValue);
+                    
+                    var taskTemp = new TaskItem(TitleTextBox.Text,_dateTimeProvider.Today, IDateTimeProvider.ParseDate(dueDate), OverCheckBox.Checked,null, enumValue);
+                    var cmd = new AddTaskCommand(this._taskService, taskTemp);
+                    
+                    result = this._commandManager.Execute(cmd);
                 }
 
                 MessageBox.Show(result.message, (result.succes) ? (this.task == null) ? "Création réussie" : "Mise à jour réussie" : (this.task == null) ? "Erreur pendant la création" : "Erreur pendant la mise à jour");
                 
                 if (result.succes)
                 {
-
+                    
                     this.Close();
                 }
             }

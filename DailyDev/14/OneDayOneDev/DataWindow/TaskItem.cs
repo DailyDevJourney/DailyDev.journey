@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OneDayOneDev.DataWindow;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OneDayOneDev
+namespace OneDayOneDev.DataWindow
 {
     [Table("Tasks")]
     public class TaskItem
@@ -36,21 +37,42 @@ namespace OneDayOneDev
         { 
             this.id = id;
             this.Title = Title; 
-            this.Iscompleted = IsCompleted;
+            Iscompleted = IsCompleted;
             this.CreatedAt = CreatedAt;
-            this.DueDate = dueDate;
+            DueDate = dueDate;
             this.OverDate = OverDate;
-            this.Priority = priority;
+            Priority = priority;
         }
         public TaskItem(string Title, DateTime? CreatedAt, DateTime? dueDate ,bool IsCompleted = false, DateTime? OverDate = null, TaskPriority priority = TaskPriority.MEDIUM)
         { 
         
             this.Title = Title; 
-            this.Iscompleted = IsCompleted;
+            Iscompleted = IsCompleted;
             this.CreatedAt = CreatedAt;
-            this.DueDate = dueDate;
+            DueDate = dueDate;
             this.OverDate = OverDate;
-            this.Priority = priority;
+            Priority = priority;
         }
+    }
+}
+
+public static class TaskItemExtension
+{
+    public static TaskItem Clone(this TaskItem task)
+    {
+        var clone = new TaskItem();
+
+        clone.id = task.id;
+        clone.Title = task.Title;
+        clone.CreatedAt = task.CreatedAt;
+        clone.DueDate = task.DueDate;
+        clone.OverDate = task.OverDate;
+        clone.UpdateAt = task.UpdateAt;
+        clone.Priority = task.Priority;
+        clone.Iscompleted = task.Iscompleted;
+
+
+        return clone;
+
     }
 }

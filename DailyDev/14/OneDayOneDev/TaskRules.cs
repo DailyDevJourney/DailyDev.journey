@@ -1,11 +1,11 @@
-﻿using OneDayOneDev;
+﻿using OneDayOneDev.DataWindow;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OneDayOneDev_DayThirteen
+namespace OneDayOneDev
 {
     public class TaskRules
     {

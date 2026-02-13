@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OneDayOneDev
+namespace OneDayOneDev.Utils
 {
     public class Log(FileHandler fileHandler)
     {
@@ -12,7 +12,7 @@ namespace OneDayOneDev
 
         public void AddLog(string message) 
         {
-            this.fileHandler.AddTextToFile(this.fileHandler.GetLogPath(),$"{ message}\n");
+            fileHandler.AddTextToFile(fileHandler.GetLogPath(),$"{ message}\n");
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿
+﻿using OneDayOneDev.DataWindow;
 
-namespace OneDayOneDev
+namespace OneDayOneDev.Utils
 {
     public class FileHandler(IDateTimeProvider dateTimeProvider)
     {
@@ -41,29 +41,29 @@ namespace OneDayOneDev
 
                             Tasks.Add(new TaskItem(id: int.Parse(valeur[0]),
                                                     Title: valeur[1],
-                                                    CreatedAt: TaskService.ParseDate(valeur[2]),
-                                                    dueDate: TaskService.ParseDate(valeur[3]),
+                                                    CreatedAt: IDateTimeProvider.ParseDate(valeur[2]),
+                                                    dueDate: IDateTimeProvider.ParseDate(valeur[3]),
                                                     IsCompleted: valeur[4] == "0" ? false : true));
                             break;
                         case 6:
 
                             Tasks.Add(new TaskItem(id: int.Parse(valeur[0]),
                                                     Title: valeur[1],
-                                                    CreatedAt: TaskService.ParseDate(valeur[2]),
-                                                    dueDate: TaskService.ParseDate(valeur[3]),
+                                                    CreatedAt: IDateTimeProvider.ParseDate(valeur[2]),
+                                                    dueDate: IDateTimeProvider.ParseDate(valeur[3]),
                                                     IsCompleted: valeur[4] == "0" ? false : true,
-                                                    TaskService.ParseDate(valeur[5])));
+                                                    IDateTimeProvider.ParseDate(valeur[5])));
 
                             break;
                         case 7:
 
                             Tasks.Add(new TaskItem(id: int.Parse(valeur[0]),
                                                     Title: valeur[1],
-                                                    CreatedAt: TaskService.ParseDate(valeur[2]),
-                                                    dueDate: TaskService.ParseDate(valeur[3]),
+                                                    CreatedAt: IDateTimeProvider.ParseDate(valeur[2]),
+                                                    dueDate:    IDateTimeProvider.ParseDate(valeur[3]),
                                                     IsCompleted: valeur[4] == "0" ? false : true,
-                                                    TaskService.ParseDate(valeur[5]),
-                                                    priority : (Enum.TryParse(valeur[6], out TaskPriority taskPriority)) ? taskPriority : TaskPriority.MEDIUM));
+                                                    IDateTimeProvider.ParseDate(valeur[5]),
+                                                    priority : Enum.TryParse(valeur[6], out TaskPriority taskPriority) ? taskPriority : TaskPriority.MEDIUM));
 
                             break;
                         default:
@@ -137,7 +137,7 @@ namespace OneDayOneDev
             var Total = Tasks == null ? 0 : Tasks.Count();
             var NonEnded = Tasks == null ? 0 : Tasks.Where(t => !t.Iscompleted).Count();
             var Ended = Tasks == null ? 0 : Tasks.Where(t => t.Iscompleted).Count();
-            var Late = Tasks == null ? 0 : Tasks.Where(t => !t.Iscompleted && (t.DueDate.HasValue && t.DueDate.Value.Date < _dateTime.Today)).Count();
+            var Late = Tasks == null ? 0 : Tasks.Where(t => !t.Iscompleted && t.DueDate.HasValue && t.DueDate.Value.Date < _dateTime.Today).Count();
 
             
             return new OperationResult(true, $"Export terminé ! \n" +
@@ -160,6 +160,16 @@ namespace OneDayOneDev
         public void AddTextToFile(string FilePath,string message)
         {
             File.AppendAllText(FilePath, message);
+        }
+
+        public OperationResult ExportToCSV(List<TaskItem> TaskToExport, MenuInfo TypeOfExport)
+        {
+            var sorted = TaskToExport.OrderBy(t => !t.Iscompleted).ThenBy(t => t.DueDate).ThenBy(t => t.Title).ToList();
+
+            var result = SaveTaskExport(sorted, TypeOfExport);
+
+            return result;
+
         }
     }
 }

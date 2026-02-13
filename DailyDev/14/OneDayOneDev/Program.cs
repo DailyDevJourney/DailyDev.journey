@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using OneDayOneDev_DayThirteen;
 
 namespace OneDayOneDev
 {
@@ -11,12 +10,12 @@ namespace OneDayOneDev
         [STAThread]
         static void Main()
         {
-            var _dateTimeProvider = new SystemDateTimeProvider();
-            var taskRepository = new TaskRepository();
+            var _dateTimeProvider = new Utils.SystemDateTimeProvider();
+            var taskservice = new Service.TaskService(new Repository.TaskRepository(), _dateTimeProvider);
             var taskrules = new TaskRules();
 
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm(taskRepository, taskrules,_dateTimeProvider));
+            Application.Run(new MainForm(taskservice, taskrules,_dateTimeProvider));
         }
     }
 }

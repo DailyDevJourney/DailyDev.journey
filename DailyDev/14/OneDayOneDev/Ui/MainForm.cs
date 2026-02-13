@@ -1,5 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using OneDayOneDev.Command;
+using OneDayOneDev.Command.Interface;
+using OneDayOneDev.Repository;
+using OneDayOneDev.Service;
+using OneDayOneDev.Utils;
 using OneDayOneDev_DayThirteen;
+using System.Security.Cryptography.Xml;
 
 namespace OneDayOneDev
 {
@@ -7,14 +13,17 @@ namespace OneDayOneDev
     {
         private readonly SystemDateTimeProvider _dateTimeProvider;
         private readonly TaskRules _taskRules;
-        private readonly TaskRepository _taskRepository;
-        public MainForm(TaskRepository _taskRepository, TaskRules _taskRules ,SystemDateTimeProvider _dateTimeProvider)
+        private readonly TaskService _taskService;
+        private readonly CommandManager _commandManager = new();
+
+        private ICommand? cmd = null;
+        public MainForm(TaskService taskservice, TaskRules _taskRules, SystemDateTimeProvider _dateTimeProvider)
         {
 
             InitializeComponent();
 
             this._dateTimeProvider = _dateTimeProvider;
-            this._taskRepository = _taskRepository;
+            this._taskService = taskservice;
             this._taskRules = _taskRules;
 
 
@@ -23,7 +32,7 @@ namespace OneDayOneDev
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+
 
             FileHandler temp = new FileHandler(_dateTimeProvider);
             var tasks = temp.LoadTaskData();
@@ -31,15 +40,16 @@ namespace OneDayOneDev
             {
                 foreach (var task in tasks)
                 {
-                    this._taskRepository.AddTask(task);
+                    this._taskService.CreateNewTask(task);
                 }
 
                 temp.DeleteFile(temp.TaskDataPath);
-                
+
             }
             this.Text = "OneDayOneDev";
             ListeTache.AutoGenerateColumns = true;
             RafraichirList();
+            RafraichirBoutonUndoRedo();
         }
 
         private void RafraichirList()
@@ -47,7 +57,7 @@ namespace OneDayOneDev
 
 
             ListeTache.DataSource = null;
-            ListeTache.DataSource = this._taskRepository.GetAllTask();
+            ListeTache.DataSource = this._taskService.GetTaskList();
 
             foreach (DataGridViewRow row in ListeTache.Rows)
             {
@@ -55,7 +65,7 @@ namespace OneDayOneDev
 
                 if (parsable)
                 {
-                    var taskFromRow = this._taskRepository.GetTaskById(id);
+                    var taskFromRow = this._taskService.GetTaskById(id);
 
                     if (taskFromRow != null)
                     {
@@ -83,7 +93,7 @@ namespace OneDayOneDev
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            
+
         }
 
         private DataGridViewRow? GetSelectedRow()
@@ -105,11 +115,12 @@ namespace OneDayOneDev
 
         private void BTNAjouter_Click(object sender, EventArgs e)
         {
-            using (var addForm = new Ajout(this._taskRepository, this._dateTimeProvider))
+            using (var addForm = new Ajout(this._commandManager, this._taskService, this._dateTimeProvider))
             {
                 addForm.Text = "Ajouter une tâche";
                 addForm.ShowDialog(this);
                 RafraichirList();
+                RafraichirBoutonUndoRedo();
             }
 
         }
@@ -125,11 +136,14 @@ namespace OneDayOneDev
                 if (parsable)
                 {
 
-                    using (var addForm = new Ajout(this._taskRepository, this._dateTimeProvider, this._taskRepository.GetTaskById(id)))
+                    using (var addForm = new Ajout(this._commandManager, this._taskService, this._dateTimeProvider, this._taskService.GetTaskById(id)))
                     {
                         addForm.Text = "Modifier une tâche";
                         addForm.ShowDialog(this);
+
+                        
                         RafraichirList();
+                        RafraichirBoutonUndoRedo();
                     }
                 }
 
@@ -153,7 +167,10 @@ namespace OneDayOneDev
                     var result = MessageBox.Show($"souhaitez-vous supprimer la tâche n° {id}?", "Confirmation demandée", MessageBoxButtons.OKCancel);
                     if (result == DialogResult.OK)
                     {
-                        var deletetask = this._taskRepository.DeleteTask(id);
+                        cmd = new DeleteTaskCommand(this._taskService, id);
+                        
+                        var deletetask = _commandManager.Execute(cmd);
+
                         MessageBox.Show(deletetask.message);
                     }
 
@@ -164,6 +181,7 @@ namespace OneDayOneDev
 
 
             RafraichirList();
+            RafraichirBoutonUndoRedo();
         }
 
 
@@ -182,7 +200,9 @@ namespace OneDayOneDev
                     var result = MessageBox.Show($"souhaitez-vous terminée la tâche n° {id}?", "Confirmation demandée", MessageBoxButtons.OKCancel);
                     if (result == DialogResult.OK)
                     {
-                        var EndTask = this._taskRepository.SetTaskCompleted(id);
+                        cmd = new CompletTaskCommand(this._taskService, id);
+
+                        var EndTask = _commandManager.Execute(cmd);
                         MessageBox.Show(EndTask.message);
                     }
 
@@ -193,15 +213,38 @@ namespace OneDayOneDev
 
 
             RafraichirList();
+            RafraichirBoutonUndoRedo();
         }
 
 
 
-        
+
 
         private void ListeTache_DoubleClic(object sender, DataGridViewCellEventArgs e)
         {
             BTNModifier_Click(sender, e);
         }
+
+        private void BTNRedo_Click(object sender, EventArgs e)
+        {
+            _commandManager.Redo();
+            RafraichirList();
+            RafraichirBoutonUndoRedo();
+        }
+
+        private void BTNUndo_Click(object sender, EventArgs e)
+        {
+            _commandManager.Undo();
+            RafraichirList();
+            RafraichirBoutonUndoRedo();
+        }
+
+        private void RafraichirBoutonUndoRedo()
+        {
+            BTNRedo.Enabled = _commandManager.CanRedo();
+            BTNUndo.Enabled = _commandManager.CanUndo();
+        }
+
+        
     }
 }

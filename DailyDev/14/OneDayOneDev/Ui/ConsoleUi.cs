@@ -1,4 +1,7 @@
-﻿namespace OneDayOneDev
+﻿using OneDayOneDev.DataWindow;
+using OneDayOneDev.Utils;
+
+namespace OneDayOneDev.Ui
 {
     public class ConsoleUi(IDateTimeProvider DateTimeProvider)
     {
@@ -97,7 +100,7 @@
             var Total = Tasks == null ? 0 : Tasks.Count();
             var NonEnded = Tasks == null ? 0 : Tasks.Where(t => !t.Iscompleted).Count();
             var Ended = Tasks == null ? 0 : Tasks.Where(t => t.Iscompleted).Count();
-            var Late = Tasks == null ? 0 : Tasks.Where(t => !t.Iscompleted && (t.DueDate.HasValue && t.DueDate.Value.Date < _DateTime.Today)).Count();
+            var Late = Tasks == null ? 0 : Tasks.Where(t => !t.Iscompleted && t.DueDate.HasValue && t.DueDate.Value.Date < _DateTime.Today).Count();
 
             return new string($"Total tâches : {Total} \n" +
                 $"Terminées : {Ended} \n" +

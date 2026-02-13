@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
+using OneDayOneDev.DataWindow;
+using OneDayOneDev.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OneDayOneDev
+namespace OneDayOneDev.Repository
 {
     public class TaskRepository
     {
@@ -20,7 +22,7 @@ namespace OneDayOneDev
             _TaskDbContext.Database.EnsureCreated();
         }
 
-        public IEnumerable<TaskItem> GetAllTask()
+        public IEnumerable<TaskItem>? GetAllTask()
         {
             try
             {
@@ -29,12 +31,53 @@ namespace OneDayOneDev
                 return tasks;
             }
             catch (Exception ex) 
+            {
+                return null;
+            }
+        }
+        public IEnumerable<TaskItem>? GetDoneTasks()
+        {
+            try
+            {
+                
+                var tasks = _TaskDbContext.TasksList.Where(t => t.Iscompleted).ToList();
+
+                return tasks;
+            }
+            catch (Exception ex) 
+            {
+                return null; 
+            }
+        }
+        public IEnumerable<TaskItem>? GetUnDoneTasks()
+        {
+            try
+            {
+                
+                var tasks = _TaskDbContext.TasksList.Where(t => !t.Iscompleted).ToList();
+
+                return tasks;
+            }
+            catch (Exception ex) 
             { 
-                return new List<TaskItem>(); 
+                return null; 
+            }
+        }
+        public int? HasTasks()
+        {
+            try
+            {
+                var tasks = _TaskDbContext.TasksList.ToList();
+
+                return tasks.Count;
+            }
+            catch (Exception ex) 
+            { 
+                return null; 
             }
         }
 
-        public TaskItem GetTaskById(int id)
+        public TaskItem? GetTaskById(int id)
         {
             try
             {
@@ -44,7 +87,7 @@ namespace OneDayOneDev
             catch (Exception ex)
             {
 
-                return new TaskItem(Title: "", DateTime.Today, TaskService.ParseDate(""));
+                return null;
             }
         }
         public OperationResult SetTaskCompleted(int id)
@@ -72,17 +115,55 @@ namespace OneDayOneDev
                 return new OperationResult(false, $"erreur : {ex.Message}"); ;
             }
         }
-        public TaskItem GetTaskByTitle(string Title)
+        public OperationResult SetTaskImcompleted(int id)
         {
             try
             {
+                var task = _TaskDbContext.TasksList.Find(id);
+                if(task != null)
+                {
+                    task.Iscompleted = false;
+                    _TaskDbContext.Entry(task).CurrentValues.SetValues(task);
+                    _TaskDbContext.SaveChanges();
 
-                return _TaskDbContext.TasksList.Find(Title);
+                    return new OperationResult(true, "Mise à jour réussi");
+                }
+                else
+                {
+                    return new OperationResult(false, "tache inexistante");
+                }
+
             }
             catch (Exception ex)
             {
 
-                return new TaskItem( Title: "", DateTime.Today, TaskService.ParseDate(""));
+                return new OperationResult(false, $"erreur : {ex.Message}"); ;
+            }
+        }
+        public TaskItem? GetTaskByTitle(string Title)
+        {
+            try
+            {
+
+                return _TaskDbContext.TasksList.Where(t => t.Title.Contains(Title.Trim(), StringComparison.OrdinalIgnoreCase)).FirstOrDefault() ;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+        public IEnumerable<TaskItem>? GetOrderTasks()
+        {
+            try
+            {
+
+                return _TaskDbContext.TasksList.OrderBy(t => t.Iscompleted).ThenBy(t => t.Title).ThenBy(t => t.id).ToList();
+            }
+            catch (Exception ex)
+            {
+
+                return null;
             }
         }
 
@@ -90,7 +171,10 @@ namespace OneDayOneDev
         {
             try
             {
-
+                if(task == null)
+                {
+                    return new OperationResult(false,"Erreur la tache est null");
+                }
                 var entity = _TaskDbContext.TasksList.Find(task.id);
 
                 if(entity == null)
@@ -113,31 +197,17 @@ namespace OneDayOneDev
             }
             
         }
-        public OperationResult AddTask(string? TaskTitle, string? DueDate, TaskPriority priority = TaskPriority.MEDIUM)
-        {
-            try
-            {
-                var newTask = new TaskItem( TaskTitle, DateTime.Today, TaskService.ParseDate(DueDate), false, null,priority);
-                return AddTask(newTask);
-                 
-            }
-            catch (Exception ex)
-            {
-
-                return  new OperationResult(false, $"erreur : {ex.Message}"); ;
-            }
-            
-        }
-        public OperationResult UpdateTask(TaskItem task)
+        
+        public OperationResult UpdateTask(int id,TaskItem Newtask)
         {
             try
             {
 
-                var entity = _TaskDbContext.TasksList.Find(task.id);
+                var entity = _TaskDbContext.TasksList.Find(id);
 
                 if(entity != null)
                 {
-                    _TaskDbContext.Entry(entity).CurrentValues.SetValues(task);
+                    _TaskDbContext.Entry(entity).CurrentValues.SetValues(Newtask);
                     _TaskDbContext.SaveChanges();
                     return new OperationResult(true,"Mise à jour réussi");
                 }
@@ -154,50 +224,9 @@ namespace OneDayOneDev
             }
             
         }
-        public OperationResult UpdateTask(int identifiant, string NewTitle, string NewDueDate, bool NewIscompleted, TaskPriority priority)
-        {
-            try
-            {
-                var newTask = new TaskItem( NewTitle, DateTime.Today, TaskService.ParseDate(NewDueDate), NewIscompleted, null, priority);
-                newTask.id = identifiant;
-                return UpdateTask(newTask);
-                
-                 
-            }
-            catch (Exception ex)
-            {
+        
 
-                return  new OperationResult(false, $"erreur : {ex.Message}"); ;
-            }
-            
-        }
-
-        public OperationResult DeleteTask(TaskItem task)
-        {
-            try
-            {
-
-                var entity = _TaskDbContext.TasksList.Find(task.id);
-
-                if (entity != null)
-                {
-                    _TaskDbContext.TasksList.Remove(task);
-                    _TaskDbContext.SaveChanges();
-                    return new OperationResult(true, "suppression réussi");
-                }
-                else
-                {
-                    return new OperationResult(false, "tache inexistante");
-                }
-
-            }
-            catch (Exception ex)
-            {
-
-                return new OperationResult(false, $"erreur : {ex.Message}"); ;
-            }
-
-        }
+        
         public OperationResult DeleteTask(int id)
         {
             try
