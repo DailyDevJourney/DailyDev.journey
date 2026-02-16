@@ -1,4 +1,5 @@
 ﻿using OneDayOneDev.DataWindow;
+using OneDayOneDev.Resultdata;
 
 namespace OneDayOneDev.Utils
 {
@@ -96,7 +97,7 @@ namespace OneDayOneDev.Utils
 
         }
 
-        public OperationResult SaveTaskExport(List<TaskItem> Tasks,MenuInfo TypeOfExport)
+        public Result SaveTaskExport(List<TaskItem> Tasks,MenuInfo TypeOfExport)
         {
             string exportDir = Path.Combine(AppContext.BaseDirectory, "TaskExport");
             Directory.CreateDirectory(exportDir);
@@ -112,7 +113,7 @@ namespace OneDayOneDev.Utils
             };
             if (ExportName == null)
             {
-                return new OperationResult(false, "Export type incorrect");
+                return Result<TaskItem>.Failed("Export type incorrect");
             }
 
 
@@ -125,7 +126,7 @@ namespace OneDayOneDev.Utils
             }
             else
             {
-                 return new OperationResult(false, $"Un fichier {exportPath} éxiste déja"); 
+                 return Result<TaskItem>.Failed($"Un fichier {exportPath} éxiste déja"); 
 
             }
 
@@ -140,7 +141,7 @@ namespace OneDayOneDev.Utils
             var Late = Tasks == null ? 0 : Tasks.Where(t => !t.Iscompleted && t.DueDate.HasValue && t.DueDate.Value.Date < _dateTime.Today).Count();
 
             
-            return new OperationResult(true, $"Export terminé ! \n" +
+            return Result<TaskItem>.Failed($"Export terminé ! \n" +
                 $"Total tâches : {Total} \n" +
                 $"Terminées : {Ended} \n" +
                 $"Restantes : {NonEnded}\n" +
@@ -162,7 +163,7 @@ namespace OneDayOneDev.Utils
             File.AppendAllText(FilePath, message);
         }
 
-        public OperationResult ExportToCSV(List<TaskItem> TaskToExport, MenuInfo TypeOfExport)
+        public Result ExportToCSV(List<TaskItem> TaskToExport, MenuInfo TypeOfExport)
         {
             var sorted = TaskToExport.OrderBy(t => !t.Iscompleted).ThenBy(t => t.DueDate).ThenBy(t => t.Title).ToList();
 

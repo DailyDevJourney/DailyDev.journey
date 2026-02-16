@@ -1,4 +1,6 @@
 ﻿using OneDayOneDev.Command.Interface;
+using OneDayOneDev.DataWindow;
+using OneDayOneDev.Resultdata;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,7 +22,7 @@ namespace OneDayOneDev.Command
             return RedoStack.Count > 0;
         }
 
-        public OperationResult  Execute(ICommand command)
+        public Result<TaskItem>  Execute(ICommand command)
         {
             var result = command.Execute();
             UndoStack.Push(command);

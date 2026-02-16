@@ -1,5 +1,6 @@
 ﻿using OneDayOneDev.Command.Interface;
 using OneDayOneDev.DataWindow;
+using OneDayOneDev.Resultdata;
 using OneDayOneDev.Service;
 using OneDayOneDev.Service.Interface;
 using System;
@@ -18,7 +19,7 @@ namespace OneDayOneDev.Command
             _service = service;
             _ItemToAdd = taskToAdd;
         }
-        public OperationResult Execute()
+        public Result<TaskItem> Execute()
         {
             
             return _service.CreateNewTask(_ItemToAdd);

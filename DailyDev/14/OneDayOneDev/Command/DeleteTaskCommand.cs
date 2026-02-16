@@ -1,5 +1,6 @@
 ﻿using OneDayOneDev.Command.Interface;
 using OneDayOneDev.DataWindow;
+using OneDayOneDev.Resultdata;
 using OneDayOneDev.Service;
 using OneDayOneDev.Service.Interface;
 using System;
@@ -20,11 +21,11 @@ namespace OneDayOneDev.Command
             _service = service;
             _taskId = ItemId;
         }
-        public OperationResult Execute()
+        public Result<TaskItem> Execute()
         {
             var Exist = _service.GetTaskById(_taskId);
             if (Exist is null)
-                return new OperationResult(false, "Tâche introuvable");
+                return Result < TaskItem >.Failed( "Tâche introuvable");
             ItemTodelete = Exist.Clone();
             return _service.DeleteTask(_taskId);
         }

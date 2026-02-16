@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic;
 using OneDayOneDev.Command.Interface;
 using OneDayOneDev.DataWindow;
+using OneDayOneDev.Resultdata;
 using OneDayOneDev.Service;
 using OneDayOneDev.Service.Interface;
 using System;
@@ -32,7 +33,7 @@ namespace OneDayOneDev.Command
             TaskDone = Done;
             _taskpriority = priority;
         }
-        public OperationResult Execute()
+        public Result<TaskItem> Execute()
         {
             var exist = _service.GetTaskById(TaskId);
             OldMemo ??= exist.Clone();

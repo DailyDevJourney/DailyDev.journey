@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OneDayOneDev.DataWindow;
+using OneDayOneDev.Resultdata;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,7 +8,7 @@ namespace OneDayOneDev.Command.Interface
 {
     public interface ICommand
     {
-        OperationResult Execute();
+        Result<TaskItem> Execute();
         void Undo();
     }
 }

@@ -2,6 +2,7 @@
 using OneDayOneDev.Command;
 using OneDayOneDev.DataWindow;
 using OneDayOneDev.Repository;
+using OneDayOneDev.Resultdata;
 using OneDayOneDev.Service;
 using OneDayOneDev.Service.Interface;
 using OneDayOneDev.Utils;
@@ -73,7 +74,7 @@ namespace OneDayOneDev_DayThirteen
             if (Enum.TryParse(ProprietyComboBox?.SelectedItem?.ToString(), out TaskPriority enumValue))
             {
                 string? dueDate = DueDateTextBox.MaskCompleted ? DueDateTextBox.Text : null;
-                OperationResult? result = null;
+                Result? result = null;
                 if( this.task != null)
                 {
                     if(this.task.Iscompleted && !OverCheckBox.Checked)
@@ -108,9 +109,9 @@ namespace OneDayOneDev_DayThirteen
                     result = this._commandManager.Execute(cmd);
                 }
 
-                MessageBox.Show(result.message, (result.succes) ? (this.task == null) ? "Création réussie" : "Mise à jour réussie" : (this.task == null) ? "Erreur pendant la création" : "Erreur pendant la mise à jour");
+                MessageBox.Show(result.Message, (result.Success) ? (this.task == null) ? "Création réussie" : "Mise à jour réussie" : (this.task == null) ? "Erreur pendant la création" : "Erreur pendant la mise à jour");
                 
-                if (result.succes)
+                if (result.Success)
                 {
                     
                     this.Close();

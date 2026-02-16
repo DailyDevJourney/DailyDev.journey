@@ -141,7 +141,7 @@ namespace OneDayOneDev
                         addForm.Text = "Modifier une tâche";
                         addForm.ShowDialog(this);
 
-                        
+
                         RafraichirList();
                         RafraichirBoutonUndoRedo();
                     }
@@ -168,10 +168,10 @@ namespace OneDayOneDev
                     if (result == DialogResult.OK)
                     {
                         cmd = new DeleteTaskCommand(this._taskService, id);
-                        
+
                         var deletetask = _commandManager.Execute(cmd);
 
-                        MessageBox.Show(deletetask.message);
+                        MessageBox.Show(deletetask.Message);
                     }
 
                 }
@@ -203,7 +203,7 @@ namespace OneDayOneDev
                         cmd = new CompletTaskCommand(this._taskService, id);
 
                         var EndTask = _commandManager.Execute(cmd);
-                        MessageBox.Show(EndTask.message);
+                        MessageBox.Show(EndTask.Message);
                     }
 
                 }
@@ -245,6 +245,6 @@ namespace OneDayOneDev
             BTNUndo.Enabled = _commandManager.CanUndo();
         }
 
-        
+       
     }
 }

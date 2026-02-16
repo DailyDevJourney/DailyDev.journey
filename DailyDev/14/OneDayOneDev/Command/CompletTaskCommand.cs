@@ -1,5 +1,6 @@
 ﻿using OneDayOneDev.Command.Interface;
 using OneDayOneDev.DataWindow;
+using OneDayOneDev.Resultdata;
 using OneDayOneDev.Service;
 using OneDayOneDev.Service.Interface;
 using System;
@@ -18,7 +19,7 @@ namespace OneDayOneDev.Command
             _service = service;
             _TaskId = Id;
         }
-        public OperationResult Execute()
+        public Result<TaskItem> Execute()
         {
 
             return this._service.SetTaskCompleted(_TaskId);

@@ -1,14 +1,14 @@
 ﻿using OneDayOneDev.DataWindow;
+using OneDayOneDev.Resultdata;
 
 namespace OneDayOneDev.Service.Interface
 {
     public interface ITaskService
     {
-        TaskRules taskRules { get; set; }
 
-        OperationResult CreateNewTask(string? TaskTitle, string? DueDate, TaskPriority priority = TaskPriority.MEDIUM);
-        OperationResult CreateNewTask(TaskItem TaskToadd);
-        OperationResult DeleteTask(int identifiant);
+        Result<TaskItem> CreateNewTask(string? TaskTitle, string? DueDate, TaskPriority priority = TaskPriority.MEDIUM);
+        Result<TaskItem> CreateNewTask(TaskItem TaskToadd);
+        Result<TaskItem> DeleteTask(int identifiant);
         IEnumerable<TaskItem> GetEndedTasks();
         List<TaskItem> GetIncomingTask();
         List<TaskItem> GetLateTask();
@@ -21,8 +21,8 @@ namespace OneDayOneDev.Service.Interface
         IEnumerable<TaskItem> GetTaskList();
         List<TaskItem> GetTaskThatEndTodayAndAreOver();
         List<TaskItem> GetTaskThatEndTodayAndNotOver();
-        OperationResult SetTaskCompleted(int identifiant);
-        OperationResult SetTaskImcompleted(int identifiant);
-        OperationResult UpdateTask(int identifiant, string NewTitle, string NewDueDate, bool NewIscompleted, TaskPriority priority);
+        Result<TaskItem> SetTaskCompleted(int identifiant);
+        Result<TaskItem> SetTaskImcompleted(int identifiant);
+        Result<TaskItem> UpdateTask(int identifiant, string NewTitle, string NewDueDate, bool NewIscompleted, TaskPriority priority);
     }
 }

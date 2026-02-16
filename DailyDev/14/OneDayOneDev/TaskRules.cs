@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace OneDayOneDev
 {
-    public class TaskRules
+    public class TaskRules : ITaskRules
     {
 
-        public bool IsTaskLate(TaskItem task,DateTime ReferenceDate)
+        public bool IsTaskLate(TaskItem task, DateTime ReferenceDate)
         {
             if (task.DueDate == null) return false; // pas de date d'échéance
 
@@ -26,7 +26,7 @@ namespace OneDayOneDev
 
         public bool CanBeDeleted(TaskItem task, DateTime ReferenceDate)
         {
-            if (task.Iscompleted || IsTaskLate(task,ReferenceDate)) return false;
+            if (task.Iscompleted || IsTaskLate(task, ReferenceDate)) return false;
             return true;
         }
         public bool CanBeCompleted(TaskItem task)

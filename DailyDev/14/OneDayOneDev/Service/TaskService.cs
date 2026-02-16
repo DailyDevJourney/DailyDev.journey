@@ -1,34 +1,29 @@
 ﻿using Microsoft.VisualBasic;
 using OneDayOneDev.DataWindow;
 using OneDayOneDev.Repository;
+using OneDayOneDev.Repository.Interface;
+using OneDayOneDev.Resultdata;
 using OneDayOneDev.Service.Interface;
 using OneDayOneDev.Utils;
+using OneDayOneDev.Utils.Interface;
 using OneDayOneDev_DayThirteen;
 using System.Globalization;
 
 namespace OneDayOneDev.Service
 {
 
-    public class TaskService : Interface.ITaskService
+    public class TaskService(ITaskRules _tasksrules,
+                    ILog _LogHandler, 
+                    ITaskRepository repo, 
+                    IDateTimeProvider _DateTimeProvider) : ITaskService
     {
 
-        private readonly TaskRepository _taskRepository;
-        Log LogHandler { get; set; }
-        FileHandler fileHandler { get; set; }
-        public TaskRules taskRules { get; set; }
+        private readonly ITaskRepository _taskRepository = repo;
+        ILog _LogHandler { get; set; } = _LogHandler;
+        public ITaskRules taskRules { get; set; } = _tasksrules;
 
-        private readonly IDateTimeProvider _DateTime;
+        private readonly IDateTimeProvider _DateTime = _DateTimeProvider;
 
-        public TaskService(TaskRepository repo, IDateTimeProvider DateTimeProvider)
-        {
-
-            _taskRepository = repo;
-            taskRules = new TaskRules();
-            _DateTime = DateTimeProvider;
-            fileHandler = new FileHandler(_DateTime);
-            LogHandler = new Log(fileHandler);
-
-        }
 
 
 
@@ -108,16 +103,16 @@ namespace OneDayOneDev.Service
 
         #region MAIN_FUNCTION
 
-        public OperationResult CreateNewTask(TaskItem TaskToadd)
+        public Result<TaskItem> CreateNewTask(TaskItem TaskToadd)
         {
 
             return _taskRepository.AddTask(TaskToadd);
         }
-        public OperationResult CreateNewTask(string? TaskTitle, string? DueDate, TaskPriority priority = TaskPriority.MEDIUM)
+        public Result<TaskItem> CreateNewTask(string? TaskTitle, string? DueDate, TaskPriority priority = TaskPriority.MEDIUM)
         {
 
             if (string.IsNullOrWhiteSpace(TaskTitle))
-                return new OperationResult(false, "Le titre ne peut pas être vide.");
+                return Result<TaskItem>.Failed("Le titre ne peut pas être vide.");
 
 
             var normalized = TaskTitle.Trim();
@@ -125,14 +120,14 @@ namespace OneDayOneDev.Service
 
             if (AlreadyExists != null)
             {
-                return new OperationResult(false, "Une autre tâche possédant ce nom existe déja");
+                return  Result<TaskItem>.Failed("Une autre tâche possédant ce nom existe déja");
             }
             else
             {
 
                 if (!string.IsNullOrEmpty(DueDate) && IDateTimeProvider.ParseDate(DueDate) == null)
                 {
-                    return new OperationResult(false, $"Erreur dans le format de la date tapée ou date invalide : {DueDate}");
+                    return Result<TaskItem>.Failed($"Erreur dans le format de la date tapée ou date invalide : {DueDate}");
                 }
                 else
                 {
@@ -142,10 +137,11 @@ namespace OneDayOneDev.Service
                                                             IDateTimeProvider.ParseDate(DueDate),
                                                             IsCompleted: false,
                                                             priority: priority));
-                    LogHandler.AddLog($"Création d'une nouvelle tâche le {_DateTime.Today.ToString("dd/MM/yyyy")} \n" +
+                    _LogHandler.AddLog($"Création d'une nouvelle tâche le {_DateTime.Today.ToString("dd/MM/yyyy")} \n" +
                                         $"Title : {normalized} \nEchéance : {IDateTimeProvider.ParseDate(DueDate)}\n" +
                                         $"Priorité : {priority.GetString()}");
-                    return new OperationResult(true, "La création de la nouvelle tâche à réussi");
+
+                    return Result<TaskItem>.Ok(_taskRepository.GetTaskByTitle(normalized),"La création de la nouvelle tâche à réussi");
                 }
 
             }
@@ -155,17 +151,17 @@ namespace OneDayOneDev.Service
 
 
 
-        public OperationResult UpdateTask(int identifiant, string NewTitle, string NewDueDate, bool NewIscompleted, TaskPriority priority)
+        public Result<TaskItem> UpdateTask(int identifiant, string NewTitle, string NewDueDate, bool NewIscompleted, TaskPriority priority)
         {
             if (!HasTask())
             {
-                return new OperationResult(false, "Aucune tâches n'as été trouvée");
+                return Result<TaskItem>.Failed("Aucune tâches n'as été trouvée");
             }
             var task = _taskRepository.GetTaskById(identifiant);
 
             if (task == null)
             {
-                return new OperationResult(false, $"Aucune tâche ne correspond à l'identifiant {identifiant}");
+                return Result<TaskItem>.Failed($"Aucune tâche ne correspond à l'identifiant {identifiant}");
             }
 
             if (!string.IsNullOrWhiteSpace(NewTitle))
@@ -174,7 +170,7 @@ namespace OneDayOneDev.Service
                 var exists = _taskRepository.GetTaskByTitle(normalized);
 
                 if (exists != null)
-                    return new OperationResult(false, "Une autre tâche possédant ce nom existe déjà");
+                    return Result<TaskItem>.Failed("Une autre tâche possédant ce nom existe déjà");
 
                 task.Title = normalized;
             }
@@ -183,7 +179,7 @@ namespace OneDayOneDev.Service
             {
                 var parsed = IDateTimeProvider.ParseDate(NewDueDate);
                 if (parsed == null)
-                    return new OperationResult(false, $"Format de date invalide : {NewDueDate}");
+                    return Result<TaskItem>.Failed($"Format de date invalide : {NewDueDate}");
 
                 task.DueDate = parsed;
             }
@@ -205,15 +201,15 @@ namespace OneDayOneDev.Service
 
         }
 
-        public OperationResult SetTaskCompleted(int identifiant)
+        public Result<TaskItem> SetTaskCompleted(int identifiant)
         {
             return _taskRepository.SetTaskCompleted(identifiant);
         }
-        public OperationResult SetTaskImcompleted(int identifiant)
+        public Result<TaskItem> SetTaskImcompleted(int identifiant)
         {
             return _taskRepository.SetTaskImcompleted(identifiant);
         }
-        public OperationResult DeleteTask(int identifiant)
+        public Result<TaskItem> DeleteTask(int identifiant)
         {
             return _taskRepository.DeleteTask(identifiant);
         }
