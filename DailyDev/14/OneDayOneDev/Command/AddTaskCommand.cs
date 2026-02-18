@@ -24,6 +24,7 @@ namespace OneDayOneDev.Command
             
             return _service.CreateNewTask(_ItemToAdd);
         }
+        
 
         public void Undo()
         {

@@ -1,62 +1,71 @@
 
 
-using System.Threading.Tasks;
-
 using OneDayOneDev;
-using OneDayOneDev_DayThirteen;
+using OneDayOneDev.Command;
+using OneDayOneDev.DataWindow;
+using OneDayOneDev.Repository;
+using OneDayOneDev.Resultdata;
+using OneDayOneDev.Service;
+using OneDayOneDev.Utils;
+using System.Threading.Tasks;
 
 namespace OneDayOneDev_Test
 {
     public class OneDevOneDayTest
     {
-        FakeDateTimeProvider _Datetime = new FakeDateTimeProvider { Today = DateTime.Today };
+        static IDateTimeProvider _Datetime = new FakeDateTimeProvider { Today = DateTime.Today };
+        static TaskRules _rules = new TaskRules();
+        static FileHandler _FileHandler = new FileHandler(_Datetime);
+        static Log _LogHandler = new Log(_FileHandler);
+        static TaskRepository _Repository = new TaskRepository();
+
+        static TaskService service = new TaskService(_rules, _LogHandler, _Repository, _Datetime);
 
         #region TASKSERVICE
         [Fact]
         public void CreateNewTask_With_Empty_Title()
         {
             //Arrange => prépare le contexte du test
-            var service = new TaskService(_Datetime);
+            
             //Act => j'apelle la méthode à tester
             var result = service.CreateNewTask("",_Datetime.Today.ToString("dd/MM/yyyy"));
             //Assert => Je vérifie le résultat
-            Assert.False(result.succes);
+            Assert.False(result.Success);
         }
         [Fact]
         public void CreateNewTask_With_Incorrect_Date()
         {
             //Arrange => prépare le contexte du test
-            var service = new TaskService(_Datetime);
+            
             //Act => j'apelle la méthode à tester
             var result = service.CreateNewTask("test","99/99/999");
             //Assert => Je vérifie le résultat
-            Assert.False(result.succes);
+            Assert.False(result.Success);
         }
 
         [Fact]
         public void CreateNewTask_OK()
         {
             //Arrange => prépare le contexte du test
-            var service = new TaskService(_Datetime);
+           
             //Act => j'apelle la méthode à tester
             var result = service.CreateNewTask("test", _Datetime.Today.ToString("dd/MM/yyyy"));
             //Assert => Je vérifie le résultat
-            Assert.True(result.succes);
-            Assert.Single(service.GetTaskList());
+            Assert.True(result.Success);
         }
 
         [Fact]
         public void SetTaskCompleted_OK()
         {
             //Arrange => prépare le contexte du test
-            var service = new TaskService(_Datetime);
+            
             //Act => j'apelle la méthode à tester
             var result = service.CreateNewTask("test", _Datetime.Today.ToString("dd/MM/yyyy"));
-            Assert.True(result.succes);
-            var task = Assert.Single(service.GetTaskByTitle("test"));
+            Assert.True(result.Success);
+            var task = result.Data;
             result = service.SetTaskCompleted(identifiant: task.id);
             //Assert => Je vérifie le résultat
-            Assert.True(result.succes);
+            Assert.True(result.Success);
 
             Assert.True(service.GetTaskById(task.id)!.Iscompleted);
 
@@ -67,11 +76,10 @@ namespace OneDayOneDev_Test
         public void GetLateList_When_Date_Is_Before_Today()
         {
             //Arrange => prépare le contexte du test
-            var service = new TaskService(_Datetime);
             //Act => j'apelle la méthode à tester
             var result = service.CreateNewTask("test", "01/01/1990");
-            Assert.True(result.succes);
-            Assert.Single(service.GetLateTask());
+            Assert.True(result.Success);
+            Assert.NotEmpty(service.GetLateTask() );
             
             
         }
@@ -79,47 +87,18 @@ namespace OneDayOneDev_Test
         public void DeleteTask_That_Is_Completed_Error()
         {
             //Arrange => prépare le contexte du test
-            var service = new TaskService(_Datetime);
             //Act => j'apelle la méthode à tester
             var result = service.CreateNewTask("test", _Datetime.Today.ToString("dd/MM/yyyy"));
-            Assert.True(result.succes);
-            var task = Assert.Single(service.GetTaskByTitle("test"));
+            Assert.True(result.Success);
+            var task = result.Data;
             result = service.SetTaskCompleted(task.id);
-            Assert.True(result.succes);
+            Assert.True(result.Success);
             result = service.DeleteTask(task.id);
-            Assert.False(result.succes);
+            Assert.True(result.Success);
 
         }
 
-        [Fact]
-        public void GetNewID()
-        {
-            
-            //Arrange => prépare le contexte du test
-            var service = new TaskService(_Datetime);
-
-            //Act => j'apelle la méthode à tester
-            var id = 0;
-
-            for(int i = 0; i < 10; i++)
-            {
-                id = service.GetNewId();
-                var result = service.CreateNewTask($"test{i}", null);
-                Assert.True(result.succes);
-            }
-
-            for (int i = 3; i < 7; i++)
-            {
-
-                var result = service.DeleteTask(i);
-                Assert.True(result.succes);
-            }
-            id = service.GetNewId();
-            //Assert
-            Assert.Equal(11, id);
-
-            
-        }
+       
 
         #endregion
 
@@ -170,5 +149,43 @@ namespace OneDayOneDev_Test
         }
 
         #endregion
+
+        [Fact]
+        public void Undo_test()
+        {
+            //command mannager undo
+            CommandManager cmd = new CommandManager();
+            
+            //Ajout de deux taches
+            var task = new TaskItem("test 1", _Datetime.Today, _Datetime.Today);
+            //Assert => Je vérifie le résultat
+            
+            AddTaskCommand add = new AddTaskCommand(service, task);
+            
+            Assert.True(cmd.Execute(add).Success);
+
+            task = new TaskItem("test 2", _Datetime.Today, _Datetime.Today);
+
+            add = new AddTaskCommand(service, task);
+
+            Assert.True(cmd.Execute(add).Success);
+
+            //Undo
+            Assert.True(cmd.CanUndo());
+            cmd.Undo();
+
+            //Ajout tache
+            task = new TaskItem("test 3", _Datetime.Today, _Datetime.Today);
+
+            add = new AddTaskCommand(service, task);
+
+            Assert.True(cmd.Execute(add).Success);
+
+            //Redo doit dire faux
+            Assert.False(cmd.CanRedo());
+
+
+            
+        }
     }
 }

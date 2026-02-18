@@ -243,8 +243,15 @@ namespace OneDayOneDev
         {
             BTNRedo.Enabled = _commandManager.CanRedo();
             BTNUndo.Enabled = _commandManager.CanUndo();
+
+            BTNUndo.Text = (_commandManager.GetUndoNbr() > 0) ? $"Undo ({_commandManager.GetUndoNbr()})" : "Undo";
+            BTNRedo.Text = (_commandManager.GetRedoNbr() > 0) ? $"Redo ({_commandManager.GetRedoNbr()})" : "Redo";
+            
         }
 
-       
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

@@ -9,9 +9,32 @@ namespace OneDayOneDev.Command
 {
     public class CommandManager
     {
-        private readonly Stack<ICommand> UndoStack = new();
-        private readonly Stack<ICommand> RedoStack = new();
+        private  Stack<ICommand> UndoStack = new();
+        private  Stack<ICommand> RedoStack = new();
 
+        //max 20 sauvegardes
+        private readonly int CommandMax = 20;
+
+        public int GetUndoNbr()
+        {
+            return UndoStack.Count;
+        }
+
+        public int GetRedoNbr()
+        {
+            return RedoStack.Count;
+        }
+        public Stack<ICommand> DeleteOlderOne(Stack<ICommand> command)
+        {
+            Stack<ICommand> newCommand = new();
+
+            for (int i = 1; i < command.Count; i++)
+            {
+                newCommand.Push(command.ElementAt(i));
+            }
+
+            return newCommand;
+        }
        
         public bool CanUndo()
         {
@@ -22,11 +45,20 @@ namespace OneDayOneDev.Command
             return RedoStack.Count > 0;
         }
 
-        public Result<TaskItem>  Execute(ICommand command)
+        public Result<TaskItem> Execute(ICommand command)
         {
             var result = command.Execute();
-            UndoStack.Push(command);
-            RedoStack.Clear();
+
+            if (result.Success) 
+            {
+                if (UndoStack.Count >= CommandMax) 
+                {
+                    UndoStack = DeleteOlderOne(UndoStack);
+                }
+                UndoStack.Push(command);
+                RedoStack.Clear();
+            }
+            
 
             return result;
         }
@@ -35,6 +67,7 @@ namespace OneDayOneDev.Command
         {
             if (!CanUndo()) return;
 
+            
             var cmd = UndoStack.Pop();
             cmd.Undo();
             RedoStack.Push(cmd);

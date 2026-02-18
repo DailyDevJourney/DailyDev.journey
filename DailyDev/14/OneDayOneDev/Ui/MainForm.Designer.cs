@@ -150,6 +150,7 @@ namespace OneDayOneDev
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.Size = new Size(537, 33);
             tableLayoutPanel1.TabIndex = 11;
+            tableLayoutPanel1.Paint += tableLayoutPanel1_Paint;
             // 
             // tableLayoutPanel2
             // 

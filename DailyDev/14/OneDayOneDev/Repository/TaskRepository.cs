@@ -184,7 +184,7 @@ namespace OneDayOneDev.Repository
                     _TaskDbContext.TasksList.Add(task);
                     _TaskDbContext.SaveChanges();
 
-                    return Result<TaskItem>.Ok(entity,"Ajout réussi");
+                    return Result<TaskItem>.Ok(task, "Ajout réussi");
                 }
                 else
                 {

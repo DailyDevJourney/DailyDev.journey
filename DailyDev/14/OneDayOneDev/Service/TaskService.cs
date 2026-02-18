@@ -105,8 +105,17 @@ namespace OneDayOneDev.Service
 
         public Result<TaskItem> CreateNewTask(TaskItem TaskToadd)
         {
+            var result = _taskRepository.AddTask(TaskToadd);
 
-            return _taskRepository.AddTask(TaskToadd);
+            if (result.Success)
+            {
+                _LogHandler.AddLog($"Création d'une nouvelle tâche le {_DateTime.Today.ToString("dd/MM/yyyy")} \n" +
+                                $"Title : {result.Data.Title} \nEchéance : {result.Data.DueDate}\n" +
+                                $"Priorité : {result.Data.Priority.GetString()}");
+            }
+            return result;
+            
+
         }
         public Result<TaskItem> CreateNewTask(string? TaskTitle, string? DueDate, TaskPriority priority = TaskPriority.MEDIUM)
         {
@@ -132,16 +141,21 @@ namespace OneDayOneDev.Service
                 else
                 {
 
-                    _taskRepository.AddTask(new TaskItem(Title: normalized,
+                    var result = _taskRepository.AddTask(new TaskItem(Title: normalized,
                                                             _DateTime.Today,
                                                             IDateTimeProvider.ParseDate(DueDate),
                                                             IsCompleted: false,
                                                             priority: priority));
-                    _LogHandler.AddLog($"Création d'une nouvelle tâche le {_DateTime.Today.ToString("dd/MM/yyyy")} \n" +
-                                        $"Title : {normalized} \nEchéance : {IDateTimeProvider.ParseDate(DueDate)}\n" +
-                                        $"Priorité : {priority.GetString()}");
 
-                    return Result<TaskItem>.Ok(_taskRepository.GetTaskByTitle(normalized),"La création de la nouvelle tâche à réussi");
+                    if (result.Success)
+                    {
+                        _LogHandler.AddLog($"Création d'une nouvelle tâche le {_DateTime.Today.ToString("dd/MM/yyyy")} \n" +
+                                        $"Title : {result.Data.Title} \nEchéance : {result.Data.DueDate}\n" +
+                                        $"Priorité : {result.Data.Priority.GetString()}");
+                    }
+                    return result;
+
+
                 }
 
             }
