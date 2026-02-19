@@ -1,0 +1,6 @@
+@OneDayOneDev.Api_HostAddress = http://localhost:5173
+
+GET {{OneDayOneDev.Api_HostAddress}}/swagger
+Accept: text/html
+
+###

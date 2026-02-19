@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneDayOneDev", "OneDayOneDe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneDayOneDev-TEST", "..\OneDayOneDev-TEST\OneDayOneDev-TEST.csproj", "{55484741-F79C-C121-64CE-5F59174B07C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneDayOneDev.Api", "..\OneDayOneDev.Api\OneDayOneDev.Api.csproj", "{1FE10542-24EC-4A9D-9B0C-405822E11344}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{55484741-F79C-C121-64CE-5F59174B07C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55484741-F79C-C121-64CE-5F59174B07C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55484741-F79C-C121-64CE-5F59174B07C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FE10542-24EC-4A9D-9B0C-405822E11344}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FE10542-24EC-4A9D-9B0C-405822E11344}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FE10542-24EC-4A9D-9B0C-405822E11344}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FE10542-24EC-4A9D-9B0C-405822E11344}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
