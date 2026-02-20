@@ -16,8 +16,10 @@ namespace OneDayOneDev.Repository
         private TaskDbContext _TaskDbContext { get; set; }
         public TaskRepository()
         {
+            var dataBasePath = Path.Combine(AppContext.BaseDirectory, "tasks.db");
+
             var options = new DbContextOptionsBuilder<TaskDbContext>()
-            .UseSqlite("Data Source=tasks.db")
+            .UseSqlite($"Data Source={dataBasePath}")
             .Options;
 
             _TaskDbContext = new TaskDbContext(options);
@@ -146,8 +148,8 @@ namespace OneDayOneDev.Repository
         {
             try
             {
-
-                return _TaskDbContext.TasksList.Where(t => t.Title.Contains(Title.Trim(), StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                
+                return  _TaskDbContext.TasksList.Where(t => t.Title.ToLower().Contains(Title.ToLower())).FirstOrDefault();
             }
             catch (Exception ex)
             {

@@ -13,12 +13,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var dbPath = Path.Combine(AppContext.BaseDirectory, "tasks.db");
-Console.WriteLine($"SQLite path used by API: {dbPath}");
-
-builder.Services.AddDbContext<TaskDbContext>(options =>
-    options.UseSqlite($"Data Source={dbPath}"));
-
 
 builder.Services.AddScoped<IDateTimeProvider,SystemDateTimeProvider>();
 builder.Services.AddScoped<FileHandler>();

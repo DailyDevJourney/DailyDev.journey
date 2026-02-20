@@ -6,8 +6,8 @@ namespace OneDayOneDev.Service.Interface
     public interface ITaskService
     {
 
-        Result<TaskItem> CreateNewTask(string? TaskTitle, string? DueDate, TaskPriority priority = TaskPriority.MEDIUM);
-        Result<TaskItem> CreateNewTask(TaskItem TaskToadd);
+         Result<TaskItem> CreateNewTask(string? TaskTitle, string? DueDate, TaskPriority priority = TaskPriority.MEDIUM);
+         Result<TaskItem> CreateNewTask(TaskItem TaskToadd);
         Result<TaskItem> DeleteTask(int identifiant);
         IEnumerable<TaskItem> GetEndedTasks();
         List<TaskItem> GetIncomingTask();
