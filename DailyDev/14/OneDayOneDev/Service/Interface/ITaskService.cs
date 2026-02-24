@@ -1,4 +1,5 @@
-﻿using OneDayOneDev.DataWindow;
+﻿using OneDayOneDev.Api.ValueObject;
+using OneDayOneDev.DataWindow;
 using OneDayOneDev.Resultdata;
 
 namespace OneDayOneDev.Service.Interface
@@ -18,7 +19,7 @@ namespace OneDayOneDev.Service.Interface
         IEnumerable<TaskItem> GetSortedList();
         TaskItem? GetTaskById(int id);
         TaskItem? GetTaskByTitle(string Recherche);
-        IEnumerable<TaskItem> GetTaskList();
+        IEnumerable<TaskItem>? GetTaskList(Filter _filter = null);
         List<TaskItem> GetTaskThatEndTodayAndAreOver();
         List<TaskItem> GetTaskThatEndTodayAndNotOver();
         Result<TaskItem> SetTaskCompleted(int identifiant);

@@ -1,12 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
+using OneDayOneDev.Api.ValueObject;
 using OneDayOneDev.DataWindow;
 using OneDayOneDev.Repository.Interface;
 using OneDayOneDev.Resultdata;
-using OneDayOneDev.Utils;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace OneDayOneDev.Repository
 {
@@ -26,13 +22,31 @@ namespace OneDayOneDev.Repository
             _TaskDbContext.Database.EnsureCreated();
         }
 
-        public IEnumerable<TaskItem>? GetAllTask()
+        public IEnumerable<TaskItem>? GetAllTask(Filter _filter = null)
         {
             try
             {
-                var tasks = _TaskDbContext.TasksList.ToList();
+                var tasks = _TaskDbContext.TasksList;
+                if(_filter.IsCompleted is not null)
+                {
+                    tasks.Where(t => (bool)_filter.IsCompleted ? t.Iscompleted : !t.Iscompleted);
+                }
+                if(_filter.DateFrom is not null)
+                {
+                    tasks.Where(t => t.CreatedAt >= Utils.IDateTimeProvider.ParseDate(_filter.DateFrom));
+                }
+                if(_filter.DateTo is not null)
+                {
+                    tasks.Where(t => t.DueDate <= Utils.IDateTimeProvider.ParseDate(_filter.DateTo));
+                }
+                
+                if (_filter.SearchDirection is not null)
+                {
+                    if(_filter.SearchDirection == "DESC")
+                    tasks.OrderByDescending(t => t.CreatedAt);
+                }
 
-                return tasks;
+                return tasks.ToList();
             }
             catch (Exception ex)
             {

@@ -1,13 +1,13 @@
-﻿using Microsoft.VisualBasic;
+﻿using OneDayOneDev.Api;
+using OneDayOneDev.Api.Request;
+using OneDayOneDev.Api.ValueObject;
 using OneDayOneDev.DataWindow;
-using OneDayOneDev.Repository;
 using OneDayOneDev.Repository.Interface;
 using OneDayOneDev.Resultdata;
 using OneDayOneDev.Service.Interface;
 using OneDayOneDev.Utils;
 using OneDayOneDev.Utils.Interface;
-using OneDayOneDev_DayThirteen;
-using System.Globalization;
+
 
 namespace OneDayOneDev.Service
 {
@@ -41,9 +41,22 @@ namespace OneDayOneDev.Service
 
         #region GETTER
 
-        public IEnumerable<TaskItem> GetTaskList()
+        public IEnumerable<TaskItem>? GetTaskList(Filter _filter = null)
         {
-            return _taskRepository.GetAllTask();
+            var tasks = _taskRepository.GetAllTask(_filter);
+
+            return tasks;
+
+
+        }
+        public PageResult? GetTaskListAysnc(TaskGetRequest request)
+        {
+            var tasks = _taskRepository.GetAllTask(request._filter);
+
+            return tasks.
+            return tasks;
+
+
         }
 
         public TaskItem? GetTaskById(int id)

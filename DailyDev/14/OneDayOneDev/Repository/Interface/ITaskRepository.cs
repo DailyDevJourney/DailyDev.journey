@@ -1,4 +1,5 @@
-﻿using OneDayOneDev.DataWindow;
+﻿using OneDayOneDev.Api.ValueObject;
+using OneDayOneDev.DataWindow;
 using OneDayOneDev.Resultdata;
 
 namespace OneDayOneDev.Repository.Interface
@@ -7,7 +8,7 @@ namespace OneDayOneDev.Repository.Interface
     {
         Result<TaskItem> AddTask(TaskItem task);
         Result<TaskItem> DeleteTask(int id);
-        IEnumerable<TaskItem>? GetAllTask();
+        IEnumerable<TaskItem>? GetAllTask(Filter _filter = null);
         IEnumerable<TaskItem>? GetDoneTasks();
         IEnumerable<TaskItem>? GetOrderTasks();
         TaskItem? GetTaskById(int id);

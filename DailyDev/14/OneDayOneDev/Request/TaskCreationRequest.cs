@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OneDayOneDev.Api.Request
 {
-    public class TaskCreationRequest
+    public class TaskCreationRequest : BaseRequest
     {
         [Required]
         public string Title { get; set; }

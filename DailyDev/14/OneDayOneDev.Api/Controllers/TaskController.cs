@@ -15,9 +15,12 @@ public class TasksController(TaskService taskService) : ControllerBase
     
 
     [HttpGet("GetAllTask")]
-    public async Task<IActionResult> GetAllTasks()
+    public async Task<IActionResult> GetAllTasks(TaskGetRequest request)
     {
         var tasks =  _taskService.GetTaskList();
+
+        tasks.TotalItem = tasks.tasks.Count();
+
         return tasks is null ? NotFound() : Ok(tasks);
     }
 
