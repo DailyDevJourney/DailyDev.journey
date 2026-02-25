@@ -144,7 +144,10 @@ namespace OnedayOneDev_Shared.Service
                 }
                 else
                 {
-
+                    if(DueDate.Trim().Length == 0)
+                    {
+                        DueDate = null;
+                    }
                     var result = _taskRepository.AddTask(new TaskItem(Title: normalized,
                                                             _DateTime.Today,
                                                             IDateTimeProvider.ParseDate(DueDate),
