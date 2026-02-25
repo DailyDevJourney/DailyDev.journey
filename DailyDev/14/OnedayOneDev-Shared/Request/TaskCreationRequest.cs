@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnedayOneDev_Shared.Request
 {
-    public class TaskCreationRequest : BaseRequest
+    public class TaskCreationRequest
     {
         [Required]
         public string Title { get; set; }
 
-        public DateTime? DueDate { get; set; } = null;
+        public string? DueDate { get; set; } = null;
       
         public TaskPriority Priority { get; set; } = TaskPriority.MEDIUM;
 
