@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OneDayOneDev
+namespace OnedayOneDev_Shared
 {
     
     public class Filter
     {
-        public string SearchDirection { get; set; } = "ASC";
+        public string? SearchDirection { get; set; } = null;
 
         public bool? IsCompleted { get; set; } = null;
 

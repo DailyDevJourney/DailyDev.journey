@@ -1,21 +1,18 @@
-﻿using OneDayOneDev.Api;
-using OneDayOneDev.Api.Request;
-using OneDayOneDev.Api.ValueObject;
-using OneDayOneDev.DataWindow;
-using OneDayOneDev.Repository.Interface;
-using OneDayOneDev.Resultdata;
-using OneDayOneDev.Service.Interface;
-using OneDayOneDev.Utils;
-using OneDayOneDev.Utils.Interface;
+﻿using OnedayOneDev_Shared.DataWindow;
+using OnedayOneDev_Shared.Repository.Interface;
+using OnedayOneDev_Shared.ResultData;
+using OnedayOneDev_Shared.Service.Interface;
+using OnedayOneDev_Shared.Utils.Interface;
 
 
-namespace OneDayOneDev.Service
+
+namespace OnedayOneDev_Shared.Service
 {
 
     public class TaskService(ITaskRules _tasksrules,
                     ILog _LogHandler, 
                     ITaskRepository repo, 
-                    IDateTimeProvider _DateTimeProvider) : ITaskService
+                    IDateTimeProvider _DateTimeProvider) :ITaskService
     {
 
         private readonly ITaskRepository _taskRepository = repo;
@@ -49,15 +46,9 @@ namespace OneDayOneDev.Service
 
 
         }
-        public PageResult? GetTaskListAysnc(TaskGetRequest request)
-        {
-            var tasks = _taskRepository.GetAllTask(request._filter);
 
-            return tasks.
-            return tasks;
+        
 
-
-        }
 
         public TaskItem? GetTaskById(int id)
         {

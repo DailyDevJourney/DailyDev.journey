@@ -1,4 +1,4 @@
-﻿namespace OneDayOneDev.Utils.Interface
+﻿namespace OnedayOneDev_Shared.Utils.Interface
 {
     public interface ILog
     {

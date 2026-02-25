@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OneDayOneDev.Api\OneDayOneDev.Api.csproj" />
     <ProjectReference Include="..\OneDayOneDev\OneDayOneDev.csproj" />
   </ItemGroup>
 

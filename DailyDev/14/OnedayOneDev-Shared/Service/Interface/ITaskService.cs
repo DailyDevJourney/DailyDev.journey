@@ -1,8 +1,8 @@
-﻿using OneDayOneDev.Api.ValueObject;
-using OneDayOneDev.DataWindow;
-using OneDayOneDev.Resultdata;
+﻿
+using OnedayOneDev_Shared.DataWindow;
+using OnedayOneDev_Shared.ResultData;
 
-namespace OneDayOneDev.Service.Interface
+namespace OnedayOneDev_Shared.Service.Interface
 {
     public interface ITaskService
     {

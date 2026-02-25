@@ -1,5 +1,5 @@
-﻿using OneDayOneDev.DataWindow;
-using OneDayOneDev.Resultdata;
+﻿using OnedayOneDev_Shared.DataWindow;
+using OnedayOneDev_Shared.ResultData;
 using System;
 using System.Collections.Generic;
 using System.Text;

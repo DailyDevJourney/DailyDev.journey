@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OneDayOneDev.Api.Request
+namespace OnedayOneDev_Shared.Request
 {
     public class TaskCreationRequest : BaseRequest
     {

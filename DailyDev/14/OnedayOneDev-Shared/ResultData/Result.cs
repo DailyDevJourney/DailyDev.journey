@@ -1,4 +1,4 @@
-﻿namespace OneDayOneDev.Resultdata
+﻿namespace OnedayOneDev_Shared.ResultData
 {
     public class Result
     {

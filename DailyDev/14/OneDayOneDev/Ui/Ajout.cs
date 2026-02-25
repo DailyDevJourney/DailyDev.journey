@@ -1,31 +1,21 @@
-﻿using OneDayOneDev;
-using OneDayOneDev.Command;
-using OneDayOneDev.DataWindow;
-using OneDayOneDev.Repository;
-using OneDayOneDev.Resultdata;
-using OneDayOneDev.Service;
-using OneDayOneDev.Service.Interface;
+﻿using OneDayOneDev.Command;
+using OnedayOneDev_Shared.DataWindow;
+using OnedayOneDev_Shared.ResultData;
+using OnedayOneDev_Shared;
 using OneDayOneDev.Utils;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using OnedayOneDev_Shared.Utils;
+using OnedayOneDev_Shared.Utils.Interface;
 
 namespace OneDayOneDev_DayThirteen
 {
     public partial class Ajout : Form
     {
         private readonly SystemDateTimeProvider _dateTimeProvider;
-        private readonly OneDayOneDev.Service.Interface.ITaskService _taskService;
+        private readonly OnedayOneDev_Shared.Service.Interface.ITaskService _taskService;
         private readonly CommandManager _commandManager;
         private readonly TaskItem? task;
 
-        public Ajout(CommandManager _cmdManager, OneDayOneDev.Service.Interface.ITaskService _taskRepository, SystemDateTimeProvider _dateTimeProvider,TaskItem? task = null)
+        public Ajout(CommandManager _cmdManager, OnedayOneDev_Shared.Service.Interface.ITaskService _taskRepository, SystemDateTimeProvider _dateTimeProvider,TaskItem? task = null)
         {
             InitializeComponent();
             this.FormClosing += Ajout_FormClosing;

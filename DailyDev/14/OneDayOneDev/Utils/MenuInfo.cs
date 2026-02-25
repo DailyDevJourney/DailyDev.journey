@@ -1,46 +1,48 @@
-﻿namespace OneDayOneDev
+﻿
+
+namespace OneDayOneDev.Utils
 {
     public enum MenuInfo
     {
-        AddTask ,
+        AddTask,
         UpdateATask,
         DeleteTask,
         SetTaskToCompleted,
 
-        showAllTask ,
+        showAllTask,
         SearchTaskByWord,
 
         ShowSortedTaskList,
         ShowDueDateAndNotOver,
         ShowDueDateAndOver,
         ShowIncomingTask,
-        showCompletedTask ,
-        ShowNotCompletedTask ,
-        
-        nbOfImcompletedTask ,
-        nbOfcompletedTask ,
-        
-        ExportAllTaskToCSV ,
-        ExportLateTaskToCSV ,
+        showCompletedTask,
+        ShowNotCompletedTask,
+
+        nbOfImcompletedTask,
+        nbOfcompletedTask,
+
+        ExportAllTaskToCSV,
+        ExportLateTaskToCSV,
         ExportCompletedTaskToCSV,
         ExportNonCompletedTaskToCSV,
-        
-        Quit 
+
+        Quit
     }
 
-    public static class MenuInfoExtension 
+    public static class MenuInfoExtension
     {
         public static int GetNumber(this MenuInfo menuInfo)
         {
             return (int)menuInfo + 1;
         }
 
-       
+
         public static string GetString(this MenuInfo menuInfo)
         {
             switch (menuInfo)
             {
-                case MenuInfo.AddTask: return $"{menuInfo.GetNumber()} - Ajouter une tâche "; 
+                case MenuInfo.AddTask: return $"{menuInfo.GetNumber()} - Ajouter une tâche ";
                 case MenuInfo.showAllTask: return $"{menuInfo.GetNumber()} - Afficher les tâches ";
                 case MenuInfo.SetTaskToCompleted: return $"{menuInfo.GetNumber()} - Marquer une tâches comme terminée ";
                 case MenuInfo.DeleteTask: return $"{menuInfo.GetNumber()} - Supprimer une tâche ";
@@ -58,9 +60,9 @@
                 case MenuInfo.ExportCompletedTaskToCSV: return $"{menuInfo.GetNumber()} - Exporter en .CSV la liste des tâches terminée";
                 case MenuInfo.ExportNonCompletedTaskToCSV: return $"{menuInfo.GetNumber()} - Exporter en .CSV la liste des tâches non terminée";
                 case MenuInfo.UpdateATask: return $"{menuInfo.GetNumber()} - Mettre à jour une tâche";
-                case MenuInfo.Quit :
+                case MenuInfo.Quit:
                     return $"{menuInfo.GetNumber()} - Quitter";
-                    
+
             }
 
             return "";

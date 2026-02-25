@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using OneDayOneDev.Utils;
+using OnedayOneDev_Shared;
+using OnedayOneDev_Shared.Service;
+using OnedayOneDev_Shared.Utils;
+using OnedayOneDev_Shared.Utils.Interface;
 
 namespace OneDayOneDev
 {
@@ -11,14 +15,14 @@ namespace OneDayOneDev
         [STAThread]
         static void Main()
         {
-            var _dateTimeProvider = new Utils.SystemDateTimeProvider();
+            var _dateTimeProvider = new SystemDateTimeProvider();
             var _taskrules = new TaskRules();
-            var _FileHandler = new Utils.FileHandler(_dateTimeProvider);
-           var _LogHandler = new Utils.Log(_FileHandler) ;
-            var _repository = new Repository.TaskRepository();
+            var _FileHandler = new FileHandler(_dateTimeProvider);
+            var _LogHandler = new Log(_FileHandler) ;
+            var _repository = new OnedayOneDev_Shared.Repository.TaskRepository();
            
 
-            var taskservice = new Service.TaskService(_taskrules, _LogHandler,_repository, _dateTimeProvider);
+            var taskservice = new TaskService(_taskrules, _LogHandler,_repository, _dateTimeProvider);
             var taskrules = new TaskRules();
 
             ApplicationConfiguration.Initialize();

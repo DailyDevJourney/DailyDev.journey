@@ -1,5 +1,8 @@
-﻿using OneDayOneDev.DataWindow;
-using OneDayOneDev.Resultdata;
+﻿using OnedayOneDev_Shared.DataWindow;
+using OnedayOneDev_Shared.ResultData;
+using OnedayOneDev_Shared;
+using OnedayOneDev_Shared.Utils.Interface;
+using OneDayOneDev;
 
 namespace OneDayOneDev.Utils
 {

@@ -1,4 +1,6 @@
-﻿namespace OneDayOneDev.Utils
+﻿using OnedayOneDev_Shared.Utils.Interface;
+
+namespace OnedayOneDev_Shared.Utils
 {
     public  class SystemDateTimeProvider : IDateTimeProvider
     {

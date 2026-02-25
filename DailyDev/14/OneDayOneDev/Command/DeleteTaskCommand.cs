@@ -1,8 +1,8 @@
 ﻿using OneDayOneDev.Command.Interface;
-using OneDayOneDev.DataWindow;
-using OneDayOneDev.Resultdata;
-using OneDayOneDev.Service;
-using OneDayOneDev.Service.Interface;
+using OnedayOneDev_Shared.DataWindow;
+using OnedayOneDev_Shared.ResultData;
+using OnedayOneDev_Shared.Service;
+using OnedayOneDev_Shared.Service.Interface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,11 +12,11 @@ namespace OneDayOneDev.Command
 {
     public class DeleteTaskCommand : ICommand
     {
-        private readonly Service.Interface.ITaskService _service;
+        private readonly OnedayOneDev_Shared.Service.Interface.ITaskService _service;
         private TaskItem? ItemTodelete;
         private readonly int _taskId;
 
-        public DeleteTaskCommand(Service.Interface.ITaskService service, int ItemId)
+        public DeleteTaskCommand(OnedayOneDev_Shared.Service.Interface.ITaskService service, int ItemId)
         {
             _service = service;
             _taskId = ItemId;

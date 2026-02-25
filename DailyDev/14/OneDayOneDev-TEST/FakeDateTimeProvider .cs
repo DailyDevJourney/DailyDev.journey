@@ -1,4 +1,4 @@
-﻿using OneDayOneDev.Utils;
+﻿using OnedayOneDev_Shared.Utils.Interface;
 
 namespace OneDayOneDev_Test
 {

@@ -1,5 +1,7 @@
-﻿using OneDayOneDev.DataWindow;
+﻿using OnedayOneDev_Shared.DataWindow;
 using OneDayOneDev.Utils;
+using OnedayOneDev_Shared.Utils.Interface;
+using OnedayOneDev_Shared;
 
 namespace OneDayOneDev.Ui
 {
@@ -79,10 +81,10 @@ namespace OneDayOneDev.Ui
             }
 
             var input = Console.ReadLine();
-            if (int.TryParse(input, out var num) && Enum.IsDefined(typeof(TaskPriority), num))
-                return (TaskPriority)num;
+            if (int.TryParse(input, out var num) && Enum.IsDefined(typeof(OnedayOneDev_Shared.TaskPriority), num))
+                return (OnedayOneDev_Shared.TaskPriority)num;
 
-            return TaskPriority.MEDIUM;
+            return OnedayOneDev_Shared.TaskPriority.MEDIUM;
         }
 
         public char? AskIsCompleted()

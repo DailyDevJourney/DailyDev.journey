@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OneDayOneDev.Api.ValueObject;
-using OneDayOneDev.DataWindow;
-using OneDayOneDev.Repository.Interface;
-using OneDayOneDev.Resultdata;
 
-namespace OneDayOneDev.Repository
+using OnedayOneDev_Shared.DataWindow;
+using OnedayOneDev_Shared.Repository.Interface;
+using OnedayOneDev_Shared.ResultData;
+using OnedayOneDev_Shared.Utils.Interface;
+
+namespace OnedayOneDev_Shared.Repository
 {
     public class TaskRepository : ITaskRepository
     {
@@ -27,24 +28,28 @@ namespace OneDayOneDev.Repository
             try
             {
                 var tasks = _TaskDbContext.TasksList;
-                if(_filter.IsCompleted is not null)
+                if(_filter is not null)
                 {
-                    tasks.Where(t => (bool)_filter.IsCompleted ? t.Iscompleted : !t.Iscompleted);
-                }
-                if(_filter.DateFrom is not null)
-                {
-                    tasks.Where(t => t.CreatedAt >= Utils.IDateTimeProvider.ParseDate(_filter.DateFrom));
-                }
-                if(_filter.DateTo is not null)
-                {
-                    tasks.Where(t => t.DueDate <= Utils.IDateTimeProvider.ParseDate(_filter.DateTo));
+                    if (_filter.IsCompleted is not null)
+                    {
+                        tasks.Where(t => (bool)_filter.IsCompleted ? t.Iscompleted : !t.Iscompleted);
+                    }
+                    if (_filter.DateFrom is not null)
+                    {
+                        tasks.Where(t => t.CreatedAt >= IDateTimeProvider.ParseDate(_filter.DateFrom));
+                    }
+                    if (_filter.DateTo is not null)
+                    {
+                        tasks.Where(t => t.DueDate <= IDateTimeProvider.ParseDate(_filter.DateTo));
+                    }
+
+                    if (_filter.SearchDirection is not null)
+                    {
+                        if (_filter.SearchDirection == "DESC")
+                            tasks.OrderByDescending(t => t.CreatedAt);
+                    }
                 }
                 
-                if (_filter.SearchDirection is not null)
-                {
-                    if(_filter.SearchDirection == "DESC")
-                    tasks.OrderByDescending(t => t.CreatedAt);
-                }
 
                 return tasks.ToList();
             }
@@ -185,7 +190,7 @@ namespace OneDayOneDev.Repository
             }
         }
 
-        public Result<TaskItem> AddTask(TaskItem task)
+        public Result<TaskItem> AddTask(OnedayOneDev_Shared.DataWindow.TaskItem task)
         {
             try
             {

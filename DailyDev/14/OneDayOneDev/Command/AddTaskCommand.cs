@@ -1,8 +1,8 @@
 ﻿using OneDayOneDev.Command.Interface;
-using OneDayOneDev.DataWindow;
-using OneDayOneDev.Resultdata;
-using OneDayOneDev.Service;
-using OneDayOneDev.Service.Interface;
+using OnedayOneDev_Shared.DataWindow;
+using OnedayOneDev_Shared.ResultData;
+using OnedayOneDev_Shared.Service;
+using OnedayOneDev_Shared.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,10 +11,10 @@ namespace OneDayOneDev.Command
 {
     public class AddTaskCommand : ICommand
     {
-        private readonly Service.Interface.ITaskService _service;
+        private readonly OnedayOneDev_Shared.Service.Interface.ITaskService _service;
         private readonly TaskItem _ItemToAdd;
 
-        public AddTaskCommand(Service.Interface.ITaskService service,TaskItem taskToAdd)
+        public AddTaskCommand(OnedayOneDev_Shared.Service.Interface.ITaskService service,TaskItem taskToAdd)
         {
             _service = service;
             _ItemToAdd = taskToAdd;

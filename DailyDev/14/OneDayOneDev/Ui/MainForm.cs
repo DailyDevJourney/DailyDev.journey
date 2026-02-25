@@ -1,11 +1,10 @@
-using Microsoft.EntityFrameworkCore;
 using OneDayOneDev.Command;
 using OneDayOneDev.Command.Interface;
-using OneDayOneDev.Repository;
-using OneDayOneDev.Service;
+using OnedayOneDev_Shared.Service;
 using OneDayOneDev.Utils;
 using OneDayOneDev_DayThirteen;
-using System.Security.Cryptography.Xml;
+using OnedayOneDev_Shared;
+using OnedayOneDev_Shared.Utils;
 
 namespace OneDayOneDev
 {

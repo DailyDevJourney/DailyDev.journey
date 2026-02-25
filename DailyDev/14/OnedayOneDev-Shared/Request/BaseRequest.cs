@@ -1,4 +1,4 @@
-﻿namespace OneDayOneDev.Api.Request
+﻿namespace OnedayOneDev_Shared.Request
 {
     public class BaseRequest
     {

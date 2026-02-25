@@ -1,8 +1,8 @@
-﻿using OneDayOneDev.DataWindow;
+﻿using OnedayOneDev_Shared.DataWindow;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OneDayOneDev.DataWindow
+namespace OnedayOneDev_Shared.DataWindow
 {
     [Table("Tasks")]
     public class TaskItem
@@ -54,25 +54,28 @@ namespace OneDayOneDev.DataWindow
             Priority = priority;
         }
     }
-}
 
-public static class TaskItemExtension
-{
-    public static TaskItem Clone(this TaskItem task)
+
+    public static class TaskItemExtension
     {
-        var clone = new TaskItem();
+        public static TaskItem Clone(this TaskItem task)
+        {
+            var clone = new TaskItem();
 
-        clone.id = task.id;
-        clone.Title = task.Title;
-        clone.CreatedAt = task.CreatedAt;
-        clone.DueDate = task.DueDate;
-        clone.OverDate = task.OverDate;
-        clone.UpdateAt = task.UpdateAt;
-        clone.Priority = task.Priority;
-        clone.Iscompleted = task.Iscompleted;
+            clone.id = task.id;
+            clone.Title = task.Title;
+            clone.CreatedAt = task.CreatedAt;
+            clone.DueDate = task.DueDate;
+            clone.OverDate = task.OverDate;
+            clone.UpdateAt = task.UpdateAt;
+            clone.Priority = task.Priority;
+            clone.Iscompleted = task.Iscompleted;
 
 
-        return clone;
+            return clone;
 
+        }
     }
+
 }
+

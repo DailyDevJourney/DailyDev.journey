@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace OneDayOneDev.Utils
+namespace OnedayOneDev_Shared.Utils.Interface
 {
     public interface IDateTimeProvider
     {

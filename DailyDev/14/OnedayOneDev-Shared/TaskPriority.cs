@@ -1,4 +1,4 @@
-﻿namespace OneDayOneDev
+﻿namespace OnedayOneDev_Shared
 {
     public enum TaskPriority
     {

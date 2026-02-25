@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using OneDayOneDev.Api;
-using OneDayOneDev.Api.Request;
-using OneDayOneDev.DataWindow;
-using OneDayOneDev.Service;
+using OneDayOneDev;
+using OnedayOneDev_Shared.Request;
+using OnedayOneDev_Shared.Service;
+using OnedayOneDev_Shared;
+using OnedayOneDev_Shared.DataWindow;
+using OnedayOneDev_Shared.ResultData;
 
 [ApiController]
 [Route("api/tasks")]
@@ -15,13 +16,11 @@ public class TasksController(TaskService taskService) : ControllerBase
     
 
     [HttpGet("GetAllTask")]
-    public async Task<IActionResult> GetAllTasks(TaskGetRequest request)
+    public async Task<IActionResult> GetAllTasks([FromQuery] TaskGetRequest request)
     {
-        var tasks =  _taskService.GetTaskList();
+        var tasks =  _taskService.GetTaskList(request._filter);
 
-        tasks.TotalItem = tasks.tasks.Count();
-
-        return tasks is null ? NotFound() : Ok(tasks);
+        return tasks is null ? NotFound() : Ok(tasks?.ConvertToPageResult(page: request.PageIndex, pageSize: request.PageSize, Filter: request._filter));
     }
 
     [HttpGet("GetTaskById")]

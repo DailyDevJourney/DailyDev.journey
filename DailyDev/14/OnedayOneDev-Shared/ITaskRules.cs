@@ -1,6 +1,6 @@
-﻿using OneDayOneDev.DataWindow;
+﻿using OnedayOneDev_Shared.DataWindow;
 
-namespace OneDayOneDev
+namespace OnedayOneDev_Shared
 {
     public interface ITaskRules
     {

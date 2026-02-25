@@ -1,10 +1,10 @@
-using Microsoft.EntityFrameworkCore;
-using OneDayOneDev;
-using OneDayOneDev.Repository;
-using OneDayOneDev.Repository.Interface;
-using OneDayOneDev.Service;
+using OnedayOneDev_Shared;
+using OnedayOneDev_Shared.Repository;
+using OnedayOneDev_Shared.Repository.Interface;
+using OnedayOneDev_Shared.Service;
+using OnedayOneDev_Shared.Utils.Interface;
+using OnedayOneDev_Shared.Utils;
 using OneDayOneDev.Utils;
-using OneDayOneDev.Utils.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +16,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IDateTimeProvider,SystemDateTimeProvider>();
 builder.Services.AddScoped<FileHandler>();
-builder.Services.AddScoped<ILog,Log>();
+builder.Services.AddScoped<ILog, Log>();
 builder.Services.AddScoped<TaskService>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<ITaskRules, TaskRules>();
