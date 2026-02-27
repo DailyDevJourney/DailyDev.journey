@@ -1,4 +1,5 @@
 ﻿using OneDayOneDev.Command.Interface;
+using OneDayOneDev.http;
 using OnedayOneDev_Shared.DataWindow;
 using OnedayOneDev_Shared.ResultData;
 using OnedayOneDev_Shared.Service;
@@ -13,30 +14,39 @@ namespace OneDayOneDev.Command
     public class DeleteTaskCommand : ICommand
     {
         private readonly OnedayOneDev_Shared.Service.Interface.ITaskService _service;
+        private readonly ApiClient _api;
         private TaskItem? ItemTodelete;
         private readonly int _taskId;
 
-        public DeleteTaskCommand(OnedayOneDev_Shared.Service.Interface.ITaskService service, int ItemId)
+        public DeleteTaskCommand(ApiClient api,OnedayOneDev_Shared.Service.Interface.ITaskService service, int ItemId)
         {
             _service = service;
             _taskId = ItemId;
+            this._api = api;
         }
-        public Result<TaskItem> Execute()
+        public async Task<Result<TaskItem?>?> Execute()
         {
-            var Exist = _service.GetTaskById(_taskId);
+            var Exist = await _api.GetTaskByIdAsync(_taskId);
             if (Exist is null)
-                return Result < TaskItem >.Failed( "Tâche introuvable");
+                return Result < TaskItem? >.Failed( "Tâche introuvable");
             ItemTodelete = Exist.Clone();
-            return _service.DeleteTask(_taskId);
+            var result= await _api.DeleteTaskAsync(_taskId);
+
+            var response = (result) ? 
+                new Result<TaskItem>(true, $"Suppression réussie de la tache {_taskId}", ItemTodelete) : 
+                new Result<TaskItem>(false, $"erreur lors de la suppression de la tache {_taskId}", ItemTodelete);
+            
+            
+            return response;
         }
 
-        public void Undo()
+        public async Task Undo()
         {
            if(ItemTodelete is null)
             {
                 return;
             }
-            _service.CreateNewTask(ItemTodelete);
+            _ = await _api.CreateATaskAsync(ItemTodelete);
         }
     }
 }

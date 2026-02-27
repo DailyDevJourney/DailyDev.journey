@@ -8,7 +8,7 @@ namespace OneDayOneDev.Command.Interface
 {
     public interface ICommand
     {
-        Result<TaskItem> Execute();
-        void Undo();
+         Task<Result<TaskItem>> Execute();
+         Task Undo();
     }
 }

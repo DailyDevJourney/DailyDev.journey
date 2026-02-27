@@ -144,7 +144,7 @@ namespace OnedayOneDev_Shared.Service
                 }
                 else
                 {
-                    if(DueDate.Trim().Length == 0)
+                    if(DueDate != null && DueDate.Trim().Length == 0)
                     {
                         DueDate = null;
                     }

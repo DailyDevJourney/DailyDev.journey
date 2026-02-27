@@ -1,10 +1,15 @@
-﻿namespace OnedayOneDev_Shared.ResultData
+﻿using System.Text.Json.Serialization;
+
+namespace OnedayOneDev_Shared.ResultData
 {
     public class Result
     {
         public bool Success { get; }
         public string Message { get; }
 
+        public Result() { }
+
+        [JsonConstructor]
         protected Result(bool success, string message   )
         {
             Success = success;
@@ -24,7 +29,11 @@
     public class Result<T> : Result
     {
         public T? Data { get; }
-        private Result(bool success, string message, T? data)
+
+        public Result() { }
+
+        [JsonConstructor]
+        public Result(bool success, string message, T? data)
             : base(success, message)
         {
             Data = data;

@@ -5,6 +5,7 @@ using OnedayOneDev_Shared;
 using OneDayOneDev.Utils;
 using OnedayOneDev_Shared.Utils;
 using OnedayOneDev_Shared.Utils.Interface;
+using OneDayOneDev.http;
 
 namespace OneDayOneDev_DayThirteen
 {
@@ -13,9 +14,10 @@ namespace OneDayOneDev_DayThirteen
         private readonly SystemDateTimeProvider _dateTimeProvider;
         private readonly OnedayOneDev_Shared.Service.Interface.ITaskService _taskService;
         private readonly CommandManager _commandManager;
+        private readonly ApiClient _api;
         private readonly TaskItem? task;
 
-        public Ajout(CommandManager _cmdManager, OnedayOneDev_Shared.Service.Interface.ITaskService _taskRepository, SystemDateTimeProvider _dateTimeProvider,TaskItem? task = null)
+        public Ajout(ApiClient api,CommandManager _cmdManager, OnedayOneDev_Shared.Service.Interface.ITaskService _taskRepository, SystemDateTimeProvider _dateTimeProvider,TaskItem? task = null)
         {
             InitializeComponent();
             this.FormClosing += Ajout_FormClosing;
@@ -23,6 +25,7 @@ namespace OneDayOneDev_DayThirteen
             this._taskService = _taskRepository;
             this.task = task;
             this._commandManager = _cmdManager;
+            this._api = api;
         }
         
 
@@ -59,12 +62,12 @@ namespace OneDayOneDev_DayThirteen
             this.Close();
         }
 
-        private void BTNAdd_Click(object sender, EventArgs e)
+        private async void BTNAdd_Click(object sender, EventArgs e)
         {
             if (Enum.TryParse(ProprietyComboBox?.SelectedItem?.ToString(), out TaskPriority enumValue))
             {
                 string? dueDate = DueDateTextBox.MaskCompleted ? DueDateTextBox.Text : null;
-                Result? result = null;
+                Result<TaskItem> result = null;
                 if( this.task != null)
                 {
                     if(this.task.Iscompleted && !OverCheckBox.Checked)
@@ -73,9 +76,9 @@ namespace OneDayOneDev_DayThirteen
                         if (answer == DialogResult.OK)
                         {
 
-                            var cmd = new UpdateCommand(this._taskService, this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
+                            var cmd = new UpdateCommand(this._api,this._taskService, this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
 
-                            result = this._commandManager.Execute(cmd);
+                            result = await this._commandManager.Execute(cmd);
                         }
                         else
                         {
@@ -84,9 +87,9 @@ namespace OneDayOneDev_DayThirteen
                     }
                     else
                     {
-                        var cmd = new UpdateCommand(this._taskService, this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
-
-                        result = this._commandManager.Execute(cmd);
+                        var cmd = new UpdateCommand(this._api,this._taskService, this.task.id, TitleTextBox.Text, dueDate, OverCheckBox.Checked, enumValue);
+                        var test = await this._commandManager.Execute(cmd);
+                        result = test;
                     }
                         
                 }
@@ -94,9 +97,9 @@ namespace OneDayOneDev_DayThirteen
                 {
                     
                     var taskTemp = new TaskItem(TitleTextBox.Text,_dateTimeProvider.Today, IDateTimeProvider.ParseDate(dueDate), OverCheckBox.Checked,null, enumValue);
-                    var cmd = new AddTaskCommand(this._taskService, taskTemp);
+                    var cmd = new AddTaskCommand(this._api, this._taskService, taskTemp);
                     
-                    result = this._commandManager.Execute(cmd);
+                    result = await this._commandManager.Execute(cmd);
                 }
 
                 MessageBox.Show(result.Message, (result.Success) ? (this.task == null) ? "Création réussie" : "Mise à jour réussie" : (this.task == null) ? "Erreur pendant la création" : "Erreur pendant la mise à jour");

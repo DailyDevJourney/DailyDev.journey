@@ -45,41 +45,49 @@ namespace OneDayOneDev.Command
             return RedoStack.Count > 0;
         }
 
-        public Result<TaskItem> Execute(ICommand command)
+        public  async Task<Result<TaskItem>> Execute(ICommand command)
         {
-            var result = command.Execute();
-
-            if (result.Success) 
+            try
             {
-                if (UndoStack.Count >= CommandMax) 
+                var result = await command.Execute();
+
+                if (result.Success)
                 {
-                    UndoStack = DeleteOlderOne(UndoStack);
+                    if (UndoStack.Count >= CommandMax)
+                    {
+                        UndoStack = DeleteOlderOne(UndoStack);
+                    }
+                    UndoStack.Push(command);
+                    RedoStack.Clear();
                 }
-                UndoStack.Push(command);
-                RedoStack.Clear();
+
+
+                return result;
+            }
+            catch (Exception ex) 
+            {
+                return Result<TaskItem>.Failed(ex.Message);
             }
             
-
-            return result;
         }
 
-        public void Undo()
+        public async Task Undo()
         {
             if (!CanUndo()) return;
 
             
             var cmd = UndoStack.Pop();
-            cmd.Undo();
+            await cmd.Undo();
             RedoStack.Push(cmd);
 
         }
 
-        public void Redo()
+        public async Task RedoAsync()
         {
             if (!CanRedo()) return;
 
             var cmd = RedoStack.Pop();
-            cmd.Execute();
+            await cmd.Execute();
             UndoStack.Push(cmd);
         }
 

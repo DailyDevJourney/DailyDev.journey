@@ -7,7 +7,7 @@ using OnedayOneDev_Shared.DataWindow;
 using OnedayOneDev_Shared.ResultData;
 
 [ApiController]
-[Route("api/tasks")]
+[Route("api/[controller]")]
 public class TasksController(TaskService taskService) : ControllerBase
 {
     
@@ -46,7 +46,47 @@ public class TasksController(TaskService taskService) : ControllerBase
         request.Priority);
 
         return result.Success
-            ? Ok(result.Data)
+            ? Ok(result)
+            : BadRequest(result.Message);
+    }
+
+    [HttpDelete("DeleteATask")]
+    public IActionResult DeleteATask(int identifiant)
+    {
+        var result = _taskService.DeleteTask(identifiant);
+
+        return result.Success
+            ? Ok(result)
+            : BadRequest(result.Message);
+    }
+
+    [HttpPut("SetTaskCompleted")]
+    public IActionResult SetTaskCompleted([FromBody] int identifiant)
+    {
+        var result = _taskService.SetTaskCompleted(identifiant);
+
+        return result.Success
+            ? Ok(result)
+            : BadRequest(result.Message);
+    }
+
+    [HttpPut("SetTaskIncompleted")]
+    public IActionResult SetTaskIncompleted([FromBody] int identifiant)
+    {
+        var result = _taskService.SetTaskImcompleted(identifiant);
+
+        return result.Success
+            ? Ok(result)
+            : BadRequest(result.Message);
+    }
+
+    [HttpPut("UpdateTask")]
+    public IActionResult UpdateTask([FromBody] UpdateRequest request)
+    {
+        var result = _taskService.UpdateTask(request.identifiant,request.NewTitle,request.NewDueDate,request.NewIscompleted,request.priority);
+
+        return result.Success
+            ? Ok(result)
             : BadRequest(result.Message);
     }
 }

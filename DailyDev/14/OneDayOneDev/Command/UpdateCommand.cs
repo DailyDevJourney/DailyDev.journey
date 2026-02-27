@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic;
 using OneDayOneDev.Command.Interface;
+using OneDayOneDev.http;
 using OnedayOneDev_Shared.DataWindow;
 using OnedayOneDev_Shared.ResultData;
 using OnedayOneDev_Shared.Service;
@@ -20,10 +21,11 @@ namespace OneDayOneDev.Command
         private readonly string taskDueDate;
         private readonly bool TaskDone;
         private readonly OnedayOneDev_Shared.TaskPriority _taskpriority;
+        private readonly ApiClient _api;
 
         private TaskItem OldMemo;
 
-        public UpdateCommand(OnedayOneDev_Shared.Service.Interface.ITaskService service, int id, string Title, string dueDate, bool Done, OnedayOneDev_Shared.TaskPriority priority)
+        public UpdateCommand(ApiClient api,OnedayOneDev_Shared.Service.Interface.ITaskService service, int id, string Title, string dueDate, bool Done, OnedayOneDev_Shared.TaskPriority priority)
         {
             _service = service;
             TaskId = id;
@@ -32,22 +34,24 @@ namespace OneDayOneDev.Command
             taskDueDate = dueDate;
             TaskDone = Done;
             _taskpriority = priority;
+            _api = api;
         }
-        public Result<TaskItem> Execute()
+        public async Task<Result<TaskItem>> Execute()
         {
-            var exist = _service.GetTaskById(TaskId);
+            var exist = await _api.GetTaskByIdAsync(TaskId);
             OldMemo ??= exist.Clone();
-            return _service.UpdateTask(TaskId, taskTitle, taskDueDate, TaskDone,_taskpriority);
+            var result = await _api.UpdateTaskAsync(TaskId, taskTitle, taskDueDate, TaskDone, _taskpriority);
+            return result;
         }
 
-        public void Undo()
+        public async Task Undo()
         {
             if(OldMemo == null)
             {
                 return ;
             }
 
-            _service.UpdateTask(TaskId, OldMemo.Title, OldMemo.DueDate?.ToString("dd/MM/yyyy"),OldMemo.Iscompleted,OldMemo.Priority);
+            _ = await _api.UpdateTaskAsync(TaskId, OldMemo.Title, OldMemo.DueDate?.ToString("dd/MM/yyyy"),OldMemo.Iscompleted,OldMemo.Priority);
         }
     }
 }

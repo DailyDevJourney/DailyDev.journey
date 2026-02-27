@@ -1,4 +1,5 @@
 ﻿using OneDayOneDev.Command.Interface;
+using OneDayOneDev.http;
 using OnedayOneDev_Shared.DataWindow;
 using OnedayOneDev_Shared.ResultData;
 using OnedayOneDev_Shared.Service;
@@ -13,22 +14,34 @@ namespace OneDayOneDev.Command
     {
         private readonly OnedayOneDev_Shared.Service.Interface.ITaskService _service;
         private readonly TaskItem _ItemToAdd;
+        private readonly ApiClient _api;
 
-        public AddTaskCommand(OnedayOneDev_Shared.Service.Interface.ITaskService service,TaskItem taskToAdd)
+        public AddTaskCommand(ApiClient api,OnedayOneDev_Shared.Service.Interface.ITaskService service,TaskItem taskToAdd)
         {
             _service = service;
             _ItemToAdd = taskToAdd;
+            _api = api;
         }
-        public Result<TaskItem> Execute()
+        public async Task<Result<TaskItem>> Execute()
         {
-            
-            return _service.CreateNewTask(_ItemToAdd);
-        }
+            try
+            {
+                
+
+                return await _api.CreateATaskAsync(_ItemToAdd);
+            }
+            catch (Exception ex) 
+            {
+                    return Result<TaskItem>.Failed(ex.Message);
+            }
+
+
+         }
         
 
-        public void Undo()
+        public async Task Undo()
         {
-            _service.DeleteTask(_ItemToAdd.id);
+            await _api.DeleteTaskAsync(_ItemToAdd.id);
         }
     }
 }

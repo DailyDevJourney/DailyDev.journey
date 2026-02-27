@@ -9,11 +9,11 @@ namespace OnedayOneDev_Shared.Repository
 {
     public class TaskRepository : ITaskRepository
     {
-        private readonly string BddPath = "D:\\Dev\\DailyDevJourney\\DailyDev\\14\\BDD";
+        
         private TaskDbContext _TaskDbContext { get; set; }
         public TaskRepository()
         {
-            var dataBasePath = Path.Combine(BddPath, "tasks.db");
+            var dataBasePath = Path.Combine(AppContext.BaseDirectory, "tasks.db");
 
             var options = new DbContextOptionsBuilder<TaskDbContext>()
             .UseSqlite($"Data Source={dataBasePath}")
