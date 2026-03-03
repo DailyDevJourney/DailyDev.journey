@@ -5,7 +5,10 @@ using OnedayOneDev_Shared.Service;
 using OnedayOneDev_Shared;
 using OnedayOneDev_Shared.DataWindow;
 using OnedayOneDev_Shared.ResultData;
+using Microsoft.AspNetCore.Authorization;
 
+
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TasksController(TaskService taskService) : ControllerBase

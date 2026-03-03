@@ -17,12 +17,11 @@ namespace OneDayOneDev_DayThirteen
         private readonly ApiClient _api;
         private readonly TaskItem? task;
 
-        public Ajout(ApiClient api,CommandManager _cmdManager, OnedayOneDev_Shared.Service.Interface.ITaskService _taskRepository, SystemDateTimeProvider _dateTimeProvider,TaskItem? task = null)
+        public Ajout(ApiClient api,CommandManager _cmdManager , SystemDateTimeProvider _dateTimeProvider,TaskItem? task = null)
         {
             InitializeComponent();
             this.FormClosing += Ajout_FormClosing;
             this._dateTimeProvider = _dateTimeProvider;
-            this._taskService = _taskRepository;
             this.task = task;
             this._commandManager = _cmdManager;
             this._api = api;
@@ -97,7 +96,7 @@ namespace OneDayOneDev_DayThirteen
                 {
                     
                     var taskTemp = new TaskItem(TitleTextBox.Text,_dateTimeProvider.Today, IDateTimeProvider.ParseDate(dueDate), OverCheckBox.Checked,null, enumValue);
-                    var cmd = new AddTaskCommand(this._api, this._taskService, taskTemp);
+                    var cmd = new AddTaskCommand(this._api, taskTemp);
                     
                     result = await this._commandManager.Execute(cmd);
                 }

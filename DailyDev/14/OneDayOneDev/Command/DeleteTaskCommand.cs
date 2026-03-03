@@ -13,14 +13,14 @@ namespace OneDayOneDev.Command
 {
     public class DeleteTaskCommand : ICommand
     {
-        private readonly OnedayOneDev_Shared.Service.Interface.ITaskService _service;
+        
         private readonly ApiClient _api;
         private TaskItem? ItemTodelete;
         private readonly int _taskId;
 
-        public DeleteTaskCommand(ApiClient api,OnedayOneDev_Shared.Service.Interface.ITaskService service, int ItemId)
+        public DeleteTaskCommand(ApiClient api, int ItemId)
         {
-            _service = service;
+        
             _taskId = ItemId;
             this._api = api;
         }

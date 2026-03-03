@@ -11,16 +11,10 @@ namespace OnedayOneDev_Shared.Repository
     {
         
         private TaskDbContext _TaskDbContext { get; set; }
-        public TaskRepository()
+        public TaskRepository(TaskDbContext taskDbContext)
         {
-            var dataBasePath = Path.Combine(AppContext.BaseDirectory, "tasks.db");
-
-            var options = new DbContextOptionsBuilder<TaskDbContext>()
-            .UseSqlite($"Data Source={dataBasePath}")
-            .Options;
-
-            _TaskDbContext = new TaskDbContext(options);
-            _TaskDbContext.Database.EnsureCreated();
+            _TaskDbContext = taskDbContext; 
+            
         }
 
         public IEnumerable<TaskItem>? GetAllTask(Filter _filter = null)

@@ -12,13 +12,13 @@ namespace OneDayOneDev.Command
 {
     public class AddTaskCommand : ICommand
     {
-        private readonly OnedayOneDev_Shared.Service.Interface.ITaskService _service;
+       
         private readonly TaskItem _ItemToAdd;
         private readonly ApiClient _api;
 
-        public AddTaskCommand(ApiClient api,OnedayOneDev_Shared.Service.Interface.ITaskService service,TaskItem taskToAdd)
+        public AddTaskCommand(ApiClient api,TaskItem taskToAdd)
         {
-            _service = service;
+            
             _ItemToAdd = taskToAdd;
             _api = api;
         }

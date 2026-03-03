@@ -12,13 +12,13 @@ namespace OneDayOneDev.Command
 {
     public class CompletTaskCommand : ICommand
     {
-        private readonly OnedayOneDev_Shared.Service.Interface.ITaskService _service;
+        
         private readonly int _TaskId;
         private readonly ApiClient _api;
 
-        public CompletTaskCommand(ApiClient api,OnedayOneDev_Shared.Service.Interface.ITaskService service, int Id)
+        public CompletTaskCommand(ApiClient api, int Id)
         {
-            _service = service;
+            
             _TaskId = Id;
             _api = api;
         }

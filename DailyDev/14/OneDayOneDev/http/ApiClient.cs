@@ -1,12 +1,16 @@
 ﻿using OnedayOneDev_Shared;
 using OnedayOneDev_Shared.DataWindow;
+using OnedayOneDev_Shared.Request;
 using OnedayOneDev_Shared.ResultData;
 using OnedayOneDev_Shared.Utils.Interface;
 using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
+using static System.Net.WebRequestMethods;
 
 namespace OneDayOneDev.http
 {
@@ -24,6 +28,32 @@ namespace OneDayOneDev.http
             
         }
 
+        public async Task<bool> LoginAsync(string username, string password)
+        {
+            var form = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string,string>("Username", username),
+            new KeyValuePair<string,string>("Password", password),
+        });
+
+            var response = await _httpClient.PostAsync("/api/auth/login", form);
+
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            var login = await response.Content.ReadFromJsonAsync<AuthLoginResponse>();
+            if (login is null || string.IsNullOrWhiteSpace(login.access_token))
+                return false;
+
+            AuthSession.SetToken(login.access_token);
+
+
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", AuthSession.AccessToken);
+
+            return true;
+        }
+
         public async Task<PageResult> GetTaskList()
         {
             var response = await _httpClient.GetAsync("api/Tasks/GetAllTask");
@@ -36,7 +66,7 @@ namespace OneDayOneDev.http
             new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
-            }) ?? new PageResult();
+            }) ?? new PageResult() ;
 
 
         }
