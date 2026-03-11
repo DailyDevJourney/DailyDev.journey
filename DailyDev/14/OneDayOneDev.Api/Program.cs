@@ -10,6 +10,7 @@ using OnedayOneDev_Shared.Identification;
 using OnedayOneDev_Shared.Repository;
 using OnedayOneDev_Shared.Repository.Interface;
 using OnedayOneDev_Shared.Service;
+using OnedayOneDev_Shared.Service.Interface;
 using OnedayOneDev_Shared.Utils;
 using OnedayOneDev_Shared.Utils.Interface;
 using System.Text;
@@ -50,7 +51,11 @@ builder.Services.AddAuthorization();
 
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
@@ -85,36 +90,35 @@ builder.Services.AddSwaggerGen(options =>
 
 var dataBasePath = Path.Combine(AppContext.BaseDirectory, "app.db");
 
-var options = new DbContextOptionsBuilder<TaskDbContext>()
-.UseSqlite($"Data Source={dataBasePath}")
-.Options;
+builder.Services.AddDbContext<TaskDbContext>(options =>
+    options.UseSqlite($"Data Source={dataBasePath}"));
 
-var _TaskDbContext = new TaskDbContext(options);
 
 
 
 builder.Services.AddSingleton<JwtTokenService>();
-builder.Services.AddSingleton<TaskDbContext>();
-
-_TaskDbContext.Database.EnsureCreated();
 
 builder.Services.AddScoped<IDateTimeProvider,SystemDateTimeProvider>();
 builder.Services.AddScoped<FileHandler>();
 builder.Services.AddScoped<ILog, Log>();
-builder.Services.AddScoped<TaskService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<ITaskService,TaskService>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+
+builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+
+
 builder.Services.AddScoped<ITaskRules, TaskRules>();
-
-
-
-
 
 var app = builder.Build();
 
-
-
-
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<TaskDbContext>();
+    db.Database.EnsureCreated();
+}
 
 
 app.UseAuthentication();

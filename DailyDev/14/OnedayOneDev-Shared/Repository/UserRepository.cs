@@ -1,6 +1,8 @@
-﻿using OnedayOneDev_Shared.DataWindow;
+﻿using Microsoft.AspNetCore.Http;
+using OnedayOneDev_Shared.DataWindow;
 using OnedayOneDev_Shared.Identification;
 using OnedayOneDev_Shared.Repository.Interface;
+using OnedayOneDev_Shared.ResultData;
 using OnedayOneDev_Shared.Utils.Interface;
 using System;
 using System.Collections.Generic;
@@ -10,25 +12,25 @@ namespace OnedayOneDev_Shared.Repository
 {
     public class UserRepository : IUserRepository
     {
-        private TaskDbContext _TaskDbContext { get; set; }
+        private TaskDbContext _DbContext { get; set; }
         public UserRepository(TaskDbContext taskDbContext)
         {
-            _TaskDbContext = taskDbContext;
+            _DbContext = taskDbContext;
 
 
-            if (_TaskDbContext.Users.Any())
+            if (!_DbContext.Users.Any())
             {
 
-                _TaskDbContext.Add(new User
+                _DbContext.Add(new User
                 {
                     UserName = "admin",
                     Password = "admin",
-                    Role = "admin"
+                    Role = UserRole.ADMIN
 
                 });
 
 
-                _TaskDbContext.SaveChanges();
+                _DbContext.SaveChanges();
             }
         }
 
@@ -36,7 +38,7 @@ namespace OnedayOneDev_Shared.Repository
         {
             try
             {
-                var Users = _TaskDbContext.Users;
+                var Users = _DbContext.Users;
 
                 return Users.ToList();
             }
@@ -51,7 +53,7 @@ namespace OnedayOneDev_Shared.Repository
             try
             {
 
-                return _TaskDbContext.Users.Find(UserName);
+                return _DbContext.Users.FirstOrDefault(u => u.UserName.ToLower() == UserName.ToLower());
             }
             catch (Exception ex)
             {
@@ -95,6 +97,110 @@ namespace OnedayOneDev_Shared.Repository
 
                 return false;
             }
+        }
+
+        public int? HasUsers()
+        {
+            try
+            {
+                var usersList = _DbContext.Users.ToList();
+
+                return usersList.Count;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public User? GetUserById(int id)
+        {
+            try
+            {
+
+                return _DbContext.Users.Find(id);
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public Result<User> UpdateUser(int id, User NewUser)
+        {
+            try
+            {
+
+                var entity = _DbContext.Users.Find(id);
+
+                if (entity != null)
+                {
+                    _DbContext.Entry(entity).CurrentValues.SetValues(NewUser);
+                    _DbContext.SaveChanges();
+                    return Result<User>.Ok(entity, "Mise à jour réussi");
+                }
+                else
+                {
+                    return Result<User>.Failed("tache inexistante");
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                return Result<User>.Failed($"erreur : {ex.Message}"); ;
+            }
+
+        }
+
+        public Result<User> DeleteUser(int id)
+        {
+            try
+            {
+                
+
+                var entity = _DbContext.Users.Find(id);
+
+                if (entity != null)
+                {
+                    _DbContext.Users.Remove(entity);
+                    _DbContext.SaveChanges();
+                    return Result<User>.Ok(null, "suppression réussi");
+                }
+                else
+                {
+                    return Result<User>.Failed("utilisateur inexistant");
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                return Result<User>.Failed($"erreur : {ex.Message}"); ;
+            }
+
+        }
+
+        public Result<User> AddUser(User user)
+        {
+            try
+            {
+                if (user == null)
+                {
+                    return Result<User>.Failed("Erreur informations utilisateur = null");
+                }
+
+                _DbContext.Users.Add(user);
+                _DbContext.SaveChanges();
+
+                return Result<User>.Ok(user, "Ajout réussi");
+            }
+            catch (Exception ex)
+            {
+                return Result<User>.Failed($"Erreur : {ex.Message}");
+            }
+
         }
 
     }

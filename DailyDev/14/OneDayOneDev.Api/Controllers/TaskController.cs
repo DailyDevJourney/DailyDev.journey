@@ -6,20 +6,21 @@ using OnedayOneDev_Shared;
 using OnedayOneDev_Shared.DataWindow;
 using OnedayOneDev_Shared.ResultData;
 using Microsoft.AspNetCore.Authorization;
+using OnedayOneDev_Shared.Service.Interface;
 
 
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class TasksController(TaskService taskService) : ControllerBase
+public class TasksController(ITaskService taskService) : ControllerBase
 {
     
 
-    private readonly TaskService _taskService = taskService;
+    private readonly ITaskService _taskService = taskService;
     
 
     [HttpGet("GetAllTask")]
-    public async Task<IActionResult> GetAllTasks([FromQuery] TaskGetRequest request)
+    public async Task<IActionResult> GetAllTasks([FromQuery] GetRequest request)
     {
         var tasks =  _taskService.GetTaskList(request._filter);
 
@@ -27,7 +28,7 @@ public class TasksController(TaskService taskService) : ControllerBase
     }
 
     [HttpGet("GetTaskById")]
-    public IActionResult GetTaskByTitle([FromQuery] int identifiant)
+    public IActionResult GetTaskById([FromQuery] int identifiant)
     {
         var tasks = _taskService.GetTaskById(identifiant);
         return tasks is null ? NotFound() : Ok(tasks);
@@ -41,7 +42,7 @@ public class TasksController(TaskService taskService) : ControllerBase
     }
 
     [HttpPost("CreateATask")]
-    public IActionResult CreateATask([FromBody] TaskCreationRequest request)
+    public IActionResult CreateATask([FromQuery] CreationRequest request)
     {
         var result = _taskService.CreateNewTask(
         request.Title,

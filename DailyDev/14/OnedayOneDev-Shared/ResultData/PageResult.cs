@@ -1,9 +1,10 @@
 ﻿using OnedayOneDev_Shared.DataWindow;
+using OnedayOneDev_Shared.Identification;
 using System.Runtime.CompilerServices;
 
 namespace OnedayOneDev_Shared.ResultData
 {
-    public class PageResult
+    public class PageResult<T>
     {
 
         
@@ -14,14 +15,17 @@ namespace OnedayOneDev_Shared.ResultData
 
         public Filter? _Filter { get; set; } = null;
 
-        public List<TaskItem>? tasks { get; set; }
+        public List<T>? itemsLists { get; set; }
 
 
     }
 
     public static class PageResultExtension
     { 
-        public static PageResult ConvertToPageResult(this IEnumerable<TaskItem> source , int page,int pageSize, Filter? Filter = null)
+        public static PageResult<T> ConvertToPageResult<T>(this IEnumerable<T> source ,
+            int page,
+            int pageSize,
+            Filter? Filter = null)
         {
             //Valeur defaut
             if(page < 1) page = 1;
@@ -30,14 +34,15 @@ namespace OnedayOneDev_Shared.ResultData
             var totalItem = source.Count();
             var totalPages = (int)Math.Ceiling(totalItem / (double)pageSize);
 
-            var tasks = source.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var Items = source.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-            if (tasks.Count == 0)
+            if (Items.Count == 0)
             {
-                tasks = null;
+                Items = null;
             }
-            return new PageResult {
-                tasks = tasks,
+            return new PageResult<T> {
+
+                itemsLists = Items,
                 ActualPage = page,
                 PageSize = pageSize,
                 TotalItem = totalItem,
@@ -47,6 +52,7 @@ namespace OnedayOneDev_Shared.ResultData
 
 
         }
-        
+
+
     }
 }

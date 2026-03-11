@@ -33,6 +33,7 @@ namespace OneDayOneDev
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             BTNAjouter = new Button();
             ListeTache = new DataGridView();
             BTNModifier = new Button();
@@ -42,13 +43,14 @@ namespace OneDayOneDev
             BTNRedo = new Button();
             tableLayoutPanel1 = new TableLayoutPanel();
             tableLayoutPanel2 = new TableLayoutPanel();
-            tableLayoutPanel3 = new TableLayoutPanel();
             tableLayoutPanel4 = new TableLayoutPanel();
             label1 = new Label();
             label2 = new Label();
             UserNameTextBox = new TextBox();
-            PasswordTextBox = new TextBox();
             ConnectionButton = new Button();
+            PasswordTextBox = new TextBox();
+            apiexpiretime = new System.Windows.Forms.Timer(components);
+            labelSession = new Label();
             ((System.ComponentModel.ISupportInitialize)ListeTache).BeginInit();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
@@ -166,7 +168,6 @@ namespace OneDayOneDev
             tableLayoutPanel2.ColumnCount = 1;
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle());
             tableLayoutPanel2.Controls.Add(ListeTache, 0, 0);
-            tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 0, 1);
             tableLayoutPanel2.Dock = DockStyle.Top;
             tableLayoutPanel2.Location = new Point(0, 39);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -176,37 +177,26 @@ namespace OneDayOneDev
             tableLayoutPanel2.Size = new Size(715, 217);
             tableLayoutPanel2.TabIndex = 12;
             // 
-            // tableLayoutPanel3
-            // 
-            tableLayoutPanel3.ColumnCount = 2;
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel3.Location = new Point(3, 200);
-            tableLayoutPanel3.Name = "tableLayoutPanel3";
-            tableLayoutPanel3.RowCount = 2;
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel3.Size = new Size(200, 14);
-            tableLayoutPanel3.TabIndex = 6;
-            // 
             // tableLayoutPanel4
             // 
-            tableLayoutPanel4.ColumnCount = 2;
-            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel4.ColumnCount = 3;
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50.1278763F));
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 49.8721237F));
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 323F));
             tableLayoutPanel4.Controls.Add(label1, 0, 0);
             tableLayoutPanel4.Controls.Add(label2, 1, 0);
             tableLayoutPanel4.Controls.Add(UserNameTextBox, 0, 1);
+            tableLayoutPanel4.Controls.Add(ConnectionButton, 2, 1);
             tableLayoutPanel4.Controls.Add(PasswordTextBox, 1, 1);
-            tableLayoutPanel4.Controls.Add(ConnectionButton, 1, 2);
+            tableLayoutPanel4.Controls.Add(labelSession, 2, 0);
             tableLayoutPanel4.Dock = DockStyle.Top;
             tableLayoutPanel4.Location = new Point(0, 256);
             tableLayoutPanel4.Name = "tableLayoutPanel4";
             tableLayoutPanel4.RowCount = 3;
-            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 49F));
-            tableLayoutPanel4.Size = new Size(715, 98);
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 37.878788F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 62.121212F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
+            tableLayoutPanel4.Size = new Size(715, 90);
             tableLayoutPanel4.TabIndex = 13;
             // 
             // label1
@@ -221,7 +211,7 @@ namespace OneDayOneDev
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(360, 0);
+            label2.Location = new Point(199, 0);
             label2.Name = "label2";
             label2.Size = new Size(80, 15);
             label2.TabIndex = 1;
@@ -229,27 +219,41 @@ namespace OneDayOneDev
             // 
             // UserNameTextBox
             // 
-            UserNameTextBox.Location = new Point(3, 27);
+            UserNameTextBox.Location = new Point(3, 25);
             UserNameTextBox.Name = "UserNameTextBox";
-            UserNameTextBox.Size = new Size(200, 23);
+            UserNameTextBox.Size = new Size(171, 23);
             UserNameTextBox.TabIndex = 2;
-            // 
-            // PasswordTextBox
-            // 
-            PasswordTextBox.Location = new Point(360, 27);
-            PasswordTextBox.Name = "PasswordTextBox";
-            PasswordTextBox.Size = new Size(247, 23);
-            PasswordTextBox.TabIndex = 3;
             // 
             // ConnectionButton
             // 
-            ConnectionButton.Location = new Point(360, 51);
+            ConnectionButton.Location = new Point(394, 25);
             ConnectionButton.Name = "ConnectionButton";
             ConnectionButton.Size = new Size(318, 28);
             ConnectionButton.TabIndex = 4;
             ConnectionButton.Text = " Connection";
             ConnectionButton.UseVisualStyleBackColor = true;
             ConnectionButton.Click += ConnectionButton_Click;
+            // 
+            // PasswordTextBox
+            // 
+            PasswordTextBox.Location = new Point(199, 25);
+            PasswordTextBox.Name = "PasswordTextBox";
+            PasswordTextBox.Size = new Size(185, 23);
+            PasswordTextBox.TabIndex = 3;
+            // 
+            // apiexpiretime
+            // 
+            apiexpiretime.Enabled = true;
+            apiexpiretime.Interval = 1000;
+            apiexpiretime.Tick += apiexpiretime_Tick;
+            // 
+            // labelSession
+            // 
+            labelSession.AutoSize = true;
+            labelSession.Location = new Point(394, 0);
+            labelSession.Name = "labelSession";
+            labelSession.Size = new Size(0, 15);
+            labelSession.TabIndex = 5;
             // 
             // MainForm
             // 
@@ -281,12 +285,13 @@ namespace OneDayOneDev
         private Button BTNRedo;
         private TableLayoutPanel tableLayoutPanel1;
         private TableLayoutPanel tableLayoutPanel2;
-        private TableLayoutPanel tableLayoutPanel3;
         private TableLayoutPanel tableLayoutPanel4;
         private Label label1;
         private Label label2;
         private TextBox UserNameTextBox;
         private TextBox PasswordTextBox;
         private Button ConnectionButton;
+        private System.Windows.Forms.Timer apiexpiretime;
+        private Label labelSession;
     }
 }

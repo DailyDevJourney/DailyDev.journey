@@ -1,5 +1,7 @@
-﻿using OnedayOneDev_Shared;
+﻿using Microsoft.VisualBasic;
+using OnedayOneDev_Shared;
 using OnedayOneDev_Shared.DataWindow;
+using OnedayOneDev_Shared.Identification;
 using OnedayOneDev_Shared.Request;
 using OnedayOneDev_Shared.ResultData;
 using OnedayOneDev_Shared.Utils.Interface;
@@ -20,7 +22,12 @@ namespace OneDayOneDev.http
 
         public ApiClient(string BaseUrl)
         {
-            _httpClient = new HttpClient()
+            var authHandler = new AuthHandler
+            {
+                InnerHandler = new HttpClientHandler()
+            };
+
+            _httpClient = new HttpClient(authHandler)
             {
                 BaseAddress = new Uri(BaseUrl)
             };
@@ -28,50 +35,61 @@ namespace OneDayOneDev.http
             
         }
 
+        private void EnsureAuthentification()
+        {
+            if (!AuthSession.IsAuthenticated) 
+            {
+                throw new UnauthorizedAccessException("Session expirée");
+            }
+        }
+
         public async Task<bool> LoginAsync(string username, string password)
         {
             var form = new FormUrlEncodedContent(new[]
-        {
-            new KeyValuePair<string,string>("Username", username),
-            new KeyValuePair<string,string>("Password", password),
-        });
+            {
+                new KeyValuePair<string,string>("Username", username),
+                new KeyValuePair<string,string>("Password", password),
+            });
 
-            var response = await _httpClient.PostAsync("/api/auth/login", form);
+            var response = await _httpClient.PostAsync("api/auth/login", form);
 
             if (!response.IsSuccessStatusCode)
                 return false;
 
             var login = await response.Content.ReadFromJsonAsync<AuthLoginResponse>();
+
             if (login is null || string.IsNullOrWhiteSpace(login.access_token))
                 return false;
 
-            AuthSession.SetToken(login.access_token);
+            AuthSession.SetToken(login.access_token, login.expires_in);
 
 
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", AuthSession.AccessToken);
 
             return true;
         }
 
-        public async Task<PageResult> GetTaskList()
+        public async Task<PageResult<TaskItem>> GetTaskList()
         {
+            EnsureAuthentification();
             var response = await _httpClient.GetAsync("api/Tasks/GetAllTask");
 
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadAsStringAsync();
 
-            return JsonSerializer.Deserialize<PageResult>(result,
+            return JsonSerializer.Deserialize<PageResult<TaskItem>>(result,
             new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
-            }) ?? new PageResult() ;
+            }) ?? new PageResult<TaskItem>() ;
 
 
         }
+
+        
         public async Task<TaskItem> GetTaskByIdAsync(int id)
         {
+            EnsureAuthentification();
             var response = await _httpClient.GetAsync($"api/Tasks/GetTaskById?identifiant={id}");
 
             response.EnsureSuccessStatusCode();
@@ -88,7 +106,7 @@ namespace OneDayOneDev.http
         }
         public async Task<TaskItem?> CreateATaskAsync(string Title,string DueDate,TaskPriority priority)
         {
-            
+            EnsureAuthentification();
             var task = new TaskItem();
 
             task.Title = Title;
@@ -120,7 +138,7 @@ namespace OneDayOneDev.http
         }
         public async Task<Result<TaskItem?>?> CreateATaskAsync(TaskItem task)
         {
-            
+            EnsureAuthentification();
             var json = JsonSerializer.Serialize(task);
 
             var content = new StringContent(
@@ -147,6 +165,7 @@ namespace OneDayOneDev.http
 
         public async Task<bool> DeleteTaskAsync(int id)
         {
+            EnsureAuthentification();
             try
             {
                 var response = await _httpClient.DeleteAsync($"api/Tasks/DeleteATask?identifiant={id}");
@@ -171,7 +190,7 @@ namespace OneDayOneDev.http
 
         public async Task<Result<TaskItem>> SetTaskDoneAsync(int id)
         {
-
+            EnsureAuthentification();
             var json = JsonSerializer.Serialize(id);
 
             var content = new StringContent(
@@ -197,7 +216,7 @@ namespace OneDayOneDev.http
         }
         public async Task<Result<TaskItem>> SetTaskUndoneAsync(int id)
         {
-
+            EnsureAuthentification();
             var json = JsonSerializer.Serialize(id);
 
             var content = new StringContent(
@@ -223,6 +242,7 @@ namespace OneDayOneDev.http
         }
         public async Task<Result<TaskItem>> UpdateTaskAsync(int id, string title, string duedate, bool iscompleted, TaskPriority taskpriority)
         {
+            EnsureAuthentification();
             var payload = new
             {
                 identifiant = id,
@@ -255,6 +275,18 @@ namespace OneDayOneDev.http
                 throw new Exception(ex.Message);
             }
             
+        }
+
+        public async Task<User?> GetCurrentUser()
+        {
+            EnsureAuthentification();
+
+            var response = await _httpClient.GetAsync("/api/auth/me");
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            return await response.Content.ReadFromJsonAsync<User>();
         }
 
 
