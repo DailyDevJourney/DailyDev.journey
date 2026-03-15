@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneDayOneDev.Api", "..\OneD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnedayOneDev-Shared", "..\OnedayOneDev-Shared\OnedayOneDev-Shared.csproj", "{98FFD399-2CCB-46DF-896E-E10E767C3AF4}"
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "OneDayOneDev-Angular", "..\OneDayOneDEv-Angular\OneDayOneDev-Angular.esproj", "{EFBF4FE4-47D8-C6DC-3F71-B132912C8DBB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,12 @@ Global
 		{98FFD399-2CCB-46DF-896E-E10E767C3AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98FFD399-2CCB-46DF-896E-E10E767C3AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98FFD399-2CCB-46DF-896E-E10E767C3AF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFBF4FE4-47D8-C6DC-3F71-B132912C8DBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFBF4FE4-47D8-C6DC-3F71-B132912C8DBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFBF4FE4-47D8-C6DC-3F71-B132912C8DBB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{EFBF4FE4-47D8-C6DC-3F71-B132912C8DBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFBF4FE4-47D8-C6DC-3F71-B132912C8DBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFBF4FE4-47D8-C6DC-3F71-B132912C8DBB}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

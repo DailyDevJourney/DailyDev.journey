@@ -112,7 +112,21 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<ITaskRules, TaskRules>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AngularPolicy", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:58455")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+
+
 var app = builder.Build();
+app.UseCors("AngularPolicy");
 
 using (var scope = app.Services.CreateScope())
 {
