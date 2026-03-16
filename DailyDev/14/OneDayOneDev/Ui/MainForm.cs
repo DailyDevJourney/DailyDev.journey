@@ -9,6 +9,7 @@ using OneDayOneDev.http;
 using OnedayOneDev_Shared.ResultData;
 using OnedayOneDev_Shared.Identification;
 
+
 namespace OneDayOneDev
 {
     public partial class MainForm : Form
@@ -22,7 +23,7 @@ namespace OneDayOneDev
         private readonly ApiClient _api;
 
         private ICommand? cmd = null;
-        public MainForm(TaskRules _taskRules, SystemDateTimeProvider _dateTimeProvider)
+        public MainForm(TaskRules _taskRules, SystemDateTimeProvider _dateTimeProvider,AppSettings appSettings)
         {
 
             InitializeComponent();
@@ -34,7 +35,7 @@ namespace OneDayOneDev
             this.FormClosing += Form1_FormClosing;
             AuthHandler.SessionExpired += OnSessionExpired;
 
-            _api = new ApiClient("https://localhost:7180/");
+            _api = new ApiClient(appSettings.apiUrl);
         }
 
         private void OnSessionExpired()

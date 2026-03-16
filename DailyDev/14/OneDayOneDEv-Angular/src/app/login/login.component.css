@@ -28,10 +28,9 @@ h2
 input{
     width : 100%;
     padding : 10px;
-    background-color : cyan;
     border : none;
     border-radius : 8px;
-    color : white;
+    color : black;
     font-size : 16px;
     cursor : pointer;
 

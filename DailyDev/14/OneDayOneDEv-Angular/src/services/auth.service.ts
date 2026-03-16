@@ -3,17 +3,23 @@ import { Observable } from 'rxjs';
 import { User } from '../models/User';
 import { Injectable } from '@angular/core';
 import { authresponse } from '../models/auth-reponse';
+import { Router } from '@angular/router';
+import { AppSettings } from "../../public/AppSettings";
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  [x: string]: any;
 
-  private api_url: string = "https://localhost:7180/api/auth/login";
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router, private AppSettings: AppSettings) {
+    AppSettings.loadConfig();
+  }
 
+  get api_url(): string {
+    return `${this.AppSettings.apiUrl}/auth/login`;
   }
 
   isLoggedIn(): boolean {
@@ -59,9 +65,11 @@ export class AuthService {
   }
 
   logout() {
+    console.log("LogOut");
+    console.log(localStorage.getItem('tokenExpiration'));
     localStorage.removeItem('token');
     localStorage.removeItem('tokenExpiration');
 
-    window.location.href = '/';
+    this.router.navigate(["/"]);
   }
 }

@@ -12,6 +12,7 @@ namespace OnedayOneDev_Shared.Repository.Interface
         IEnumerable<TaskItem>? GetDoneTasks();
         IEnumerable<TaskItem>? GetOrderTasks();
         TaskItem? GetTaskById(int id);
+        IEnumerable<TaskItem>? GetTaskByPriority(TaskPriority priority);
         TaskItem? GetTaskByTitle(string Title);
         IEnumerable<TaskItem>? GetUnDoneTasks();
         int? HasTasks();

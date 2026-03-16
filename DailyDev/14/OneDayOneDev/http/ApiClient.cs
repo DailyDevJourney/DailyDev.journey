@@ -12,6 +12,7 @@ using System.Net.Http.Json;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using static System.Net.WebRequestMethods;
 
 namespace OneDayOneDev.http
@@ -80,7 +81,8 @@ namespace OneDayOneDev.http
             return JsonSerializer.Deserialize<PageResult<TaskItem>>(result,
             new JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = true,
+                Converters = { new JsonStringEnumConverter() }
             }) ?? new PageResult<TaskItem>() ;
 
 
@@ -99,7 +101,8 @@ namespace OneDayOneDev.http
             return JsonSerializer.Deserialize<TaskItem>(result,
             new JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = true,
+                Converters = { new JsonStringEnumConverter() }
             }) ?? new TaskItem();
 
 
@@ -131,7 +134,8 @@ namespace OneDayOneDev.http
                 responseJson,
                 new JsonSerializerOptions
                 {
-                    PropertyNameCaseInsensitive = true
+                    PropertyNameCaseInsensitive = true,
+                    Converters = { new JsonStringEnumConverter() }
                 });
 
 
@@ -157,7 +161,8 @@ namespace OneDayOneDev.http
                 responseJson,
                 new JsonSerializerOptions
                 {
-                    PropertyNameCaseInsensitive = true
+                    PropertyNameCaseInsensitive = true,
+                    Converters = { new JsonStringEnumConverter() }
                 });
 
 
@@ -209,7 +214,8 @@ namespace OneDayOneDev.http
                 responseJson,
                 new JsonSerializerOptions
                 {
-                    PropertyNameCaseInsensitive = true
+                    PropertyNameCaseInsensitive = true,
+                    Converters = { new JsonStringEnumConverter() }
                 });
 
 
@@ -235,7 +241,8 @@ namespace OneDayOneDev.http
                 responseJson,
                 new JsonSerializerOptions
                 {
-                    PropertyNameCaseInsensitive = true
+                    PropertyNameCaseInsensitive = true,
+                    Converters = { new JsonStringEnumConverter() }
                 });
 
 
@@ -266,7 +273,9 @@ namespace OneDayOneDev.http
 
                 var result = JsonSerializer.Deserialize<Result<TaskItem>>(
                     responseJson,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true,
+                        Converters = { new JsonStringEnumConverter() }
+                    });
 
                 return result ?? throw new Exception("Réponse invalide (deserialize null).");
             }

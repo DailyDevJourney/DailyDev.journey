@@ -41,8 +41,15 @@ public class TasksController(ITaskService taskService) : ControllerBase
         return tasks is null ? NotFound() : Ok(tasks);
     }
 
+    [HttpGet("GetTaskByPriorities")]
+    public IActionResult GetTaskByPriority([FromQuery] TaskPriority priority)
+    {
+        var tasks = _taskService.GetTaskByPriority(priority);
+        return tasks is null ? NotFound() : Ok(tasks);
+    }
+
     [HttpPost("CreateATask")]
-    public IActionResult CreateATask([FromQuery] CreationRequest request)
+    public IActionResult CreateATask([FromBody] CreationRequest request)
     {
         var result = _taskService.CreateNewTask(
         request.Title,

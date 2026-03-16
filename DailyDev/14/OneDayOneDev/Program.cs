@@ -20,12 +20,13 @@ namespace OneDayOneDev
             var _taskrules = new TaskRules();
             var _FileHandler = new FileHandler(_dateTimeProvider);
             var _LogHandler = new Log(_FileHandler) ;
+            var AppSettings = new AppSettings() ;
            
 
             var taskrules = new TaskRules();
 
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm( taskrules,_dateTimeProvider));
+            Application.Run(new MainForm( taskrules,_dateTimeProvider, AppSettings));
         }
     }
 }

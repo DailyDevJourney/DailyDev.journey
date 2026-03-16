@@ -5,7 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
+  selector: 'Login',
   standalone: true,
   imports: [FormsModule,
   RouterModule],
@@ -15,7 +15,7 @@ import { Router, RouterModule } from '@angular/router';
 export class LoginComponent {
 
   constructor(private authService: AuthService,private router : Router) { }
-
+ 
   
   onSubmit(form: NgForm) {
 
@@ -39,7 +39,9 @@ export class LoginComponent {
 
         localStorage.setItem('token', token);
         localStorage.setItem('tokenExpiration', expirationDate.toISOString());
-        
+
+        console.log("Expire in API : ", response.expires_in);
+        console.log("Expire in Calculée : ", expirationDate);
         this.router.navigate(["/Task"]);
 
       },
@@ -57,6 +59,8 @@ export class LoginComponent {
       alert('Déjà connecté');
     }
   }
+
+  
 
 }
 

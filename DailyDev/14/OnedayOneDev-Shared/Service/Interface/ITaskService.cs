@@ -18,6 +18,7 @@ namespace OnedayOneDev_Shared.Service.Interface
         int GetNumberOfNonEndedTask();
         IEnumerable<TaskItem> GetSortedList();
         TaskItem? GetTaskById(int id);
+        IEnumerable<TaskItem> GetTaskByPriority(TaskPriority priority);
         TaskItem? GetTaskByTitle(string Recherche);
         IEnumerable<TaskItem>? GetTaskList(Filter _filter = null);
         List<TaskItem> GetTaskThatEndTodayAndAreOver();

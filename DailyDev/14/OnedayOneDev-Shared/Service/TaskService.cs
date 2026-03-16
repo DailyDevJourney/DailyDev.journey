@@ -54,6 +54,10 @@ namespace OnedayOneDev_Shared.Service
         {
             return _taskRepository.GetTaskById(id);
         }
+        public IEnumerable<TaskItem> GetTaskByPriority(TaskPriority priority)
+        {
+            return _taskRepository.GetTaskByPriority(priority);
+        }
 
         public IEnumerable<TaskItem> GetEndedTasks()
         {
@@ -190,7 +194,7 @@ namespace OnedayOneDev_Shared.Service
                 var normalized = NewTitle.Trim();
                 var exists = _taskRepository.GetTaskByTitle(normalized);
 
-                if (exists != null)
+                if (exists != null && exists.id != identifiant)
                     return Result<TaskItem>.Failed("Une autre tâche possédant ce nom existe déjà");
 
                 task.Title = normalized;

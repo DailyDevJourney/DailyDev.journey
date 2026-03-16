@@ -17,6 +17,12 @@ namespace OnedayOneDev_Shared.Repository
             
         }
 
+        public IEnumerable<TaskItem>? GetTaskByPriority(TaskPriority priority)
+        {
+            var tasksList = GetAllTask();
+            return tasksList.Where(x => x.Priority == priority);
+        }
+
         public IEnumerable<TaskItem>? GetAllTask(Filter _filter = null)
         {
             try
